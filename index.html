@@ -1,0 +1,1054 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI Medical Devices Roadmap</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,600;8..60,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#26397f; --navy-2:#3b4f9a; --orange:#e07b24; --red:#d23c5a; --green:#23935a; --blue:#3a78d4;
+  --ink:#1f2433; --muted:#5b6275; --line:#e3e6ef; --card:#fff; --soft:#f5f6fa;
+  --bg-blue:#e9f0fb; --bg-orange:#fdf0e3; --bg-green:#e6f4ec; --bg-red:#fbe8ec; --bg-navy:#e8ebf6;
+  --serif:"Source Serif 4", Georgia, "Times New Roman", serif;
+  --sans:Inter, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;background:#11152a;overflow:hidden;font-family:var(--sans);color:var(--ink)}
+#viewport{position:fixed;inset:0;display:flex;align-items:center;justify-content:center}
+#stage{width:1600px;height:900px;position:relative;flex:none;transform-origin:center center;background:#fff;box-shadow:0 20px 60px rgba(0,0,0,.45);overflow:hidden}
+.slide{position:absolute;inset:0;padding:56px 72px 70px;background:#fff url(assets/bg.jpg) center/cover no-repeat;opacity:0;visibility:hidden;transition:opacity .45s ease, transform .45s ease;transform:translateX(30px)}
+.slide.active{opacity:1;visibility:visible;transform:none}
+.slide.prev{transform:translateX(-30px)}
+.slide.active .anim{animation:rise .55s both}
+.slide.active .anim:nth-child(2){animation-delay:.06s}
+.slide.active .anim:nth-child(3){animation-delay:.12s}
+.slide.active .anim:nth-child(4){animation-delay:.18s}
+.slide.active .anim:nth-child(5){animation-delay:.24s}
+.slide.active .anim:nth-child(6){animation-delay:.30s}
+.slide.active .anim:nth-child(7){animation-delay:.36s}
+@keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+
+/* chrome */
+.kicker{font-size:17px;font-weight:700;letter-spacing:.16em;color:var(--orange);text-transform:uppercase;margin-bottom:10px}
+.kicker b{margin-right:14px}
+h1{font-family:var(--serif);font-weight:700;color:var(--navy);font-size:46px;line-height:1.12;margin-bottom:10px}
+.sub{font-style:italic;color:var(--muted);font-size:19px;margin-bottom:20px}
+.foot{position:absolute;left:72px;right:72px;bottom:22px;display:flex;align-items:center;justify-content:space-between;font-size:14px;color:var(--muted)}
+.foot .r{display:flex;align-items:center;gap:22px}
+.foot img{width:34px;height:auto;border-radius:2px}
+.src{position:absolute;left:72px;right:72px;bottom:56px;font-size:12.5px;font-style:italic;color:#7a8091;line-height:1.35}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:0 4px 16px rgba(30,40,80,.06)}
+.label{font-size:13px;font-weight:700;letter-spacing:.14em;text-transform:uppercase}
+.c-navy{color:var(--navy)}.c-orange{color:var(--orange)}.c-green{color:var(--green)}.c-red{color:var(--red)}.c-blue{color:var(--blue)}.c-muted{color:var(--muted)}
+.grid{display:grid;gap:18px}
+.pill{display:inline-block;font-size:12px;font-weight:700;padding:3px 9px;border-radius:999px;letter-spacing:.04em}
+.ico{width:46px;height:46px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex:none}
+.ico svg{width:24px;height:24px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+
+/* UI */
+#progress{position:fixed;left:0;top:0;height:4px;background:var(--orange);transition:width .35s ease;z-index:10}
+#ui{position:fixed;left:50%;transform:translateX(-50%);bottom:16px;display:flex;align-items:center;gap:8px;z-index:10;opacity:0;transition:opacity .25s}
+#ui:hover,body.show-ui #ui{opacity:1}
+#ui button{width:42px;height:42px;border-radius:50%;border:0;background:rgba(255,255,255,.95);color:var(--navy);font-size:18px;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.3);display:flex;align-items:center;justify-content:center}
+#ui button:hover{background:var(--orange);color:#fff}
+#ui button:disabled{opacity:.4;cursor:default}
+#counter{background:rgba(255,255,255,.95);color:var(--navy);font:600 14px var(--sans);padding:10px 14px;border-radius:999px;box-shadow:0 2px 8px rgba(0,0,0,.3);min-width:76px;text-align:center}
+#help{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);background:#fff;color:var(--ink);padding:28px 34px;border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,.5);z-index:20;display:none;font-size:15px;line-height:1.9;min-width:360px}
+#help.on{display:block}
+#help h3{font-family:var(--serif);color:var(--navy);font-size:22px;margin-bottom:8px}
+#help kbd{display:inline-block;min-width:28px;padding:1px 7px;border:1px solid #cfd3de;border-bottom-width:3px;border-radius:6px;font:600 13px var(--sans);text-align:center;background:#f7f8fb;margin-right:4px}
+#overview{position:fixed;inset:0;background:rgba(14,18,38,.94);z-index:15;display:none;overflow:auto;padding:40px}
+#overview.on{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:18px;align-content:start}
+#overview button{background:#fff;border:3px solid transparent;border-radius:10px;padding:14px 16px;text-align:left;cursor:pointer;font:500 14px/1.35 var(--sans);color:var(--ink);min-height:96px}
+#overview button.cur{border-color:var(--orange)}
+#overview button span{display:block;font-weight:700;color:var(--orange);font-size:12px;letter-spacing:.1em;margin-bottom:6px}
+
+/* ---------- slide-specific ---------- */
+/* 1 title */
+.s-title .map{position:absolute;right:-30px;top:10px;height:830px;opacity:.95}
+.s-title .ecg{position:absolute;left:0;right:0;bottom:62px;height:70px}
+.s-title .inner{position:relative;margin-top:110px;width:780px}
+.s-title h1{font-size:66px;line-height:1.08;margin:18px 0 26px}
+.s-title .tag{max-width:700px;font-size:26px;color:var(--muted);line-height:1.4;margin-bottom:56px}
+.s-title .meta{display:grid;grid-template-columns:1.7fr .6fr .8fr;gap:20px;margin-bottom:50px}
+.s-title .meta .label{color:var(--orange);margin-bottom:10px}
+.s-title .meta div div{font-size:19px}
+.s-title .team{font-size:22px;line-height:1.5}
+.s-title .team b{display:block;font-weight:600}
+
+/* 2 vision */
+.vision{display:grid;grid-template-columns:1.05fr 1fr;gap:44px;margin-top:22px}
+.quote{background:var(--navy);color:#fff;border-radius:18px;padding:44px 46px;position:relative}
+.quote .q{font-family:var(--serif);font-size:110px;line-height:.6;color:var(--orange);height:50px}
+.quote .label{color:#ffc58e;margin:6px 0 18px}
+.quote p{font-family:var(--serif);font-size:33px;line-height:1.38}
+.quote .vyr{position:absolute;right:30px;bottom:24px;text-align:right}
+.quote .vyr b{display:block;font-family:var(--serif);font-size:54px;color:#fff;opacity:.25;line-height:1}
+.quote .vyr span{font-size:12px;letter-spacing:.2em;opacity:.5}
+.v-items{display:grid;gap:16px}
+.v-item{display:flex;gap:20px;align-items:flex-start;padding:20px 24px}
+.v-item h3{font-size:21px;margin-bottom:5px}
+.v-item p{font-size:17px;color:var(--muted);line-height:1.45}
+.aligned{margin-top:24px;font-size:15px;color:var(--muted);border-left:4px solid var(--orange);padding:8px 14px;background:rgba(255,255,255,.7)}
+
+/* 3 seven values */
+.values{display:grid;grid-template-columns:repeat(7,1fr);gap:14px;margin-top:40px}
+.value{padding:26px 18px 24px;text-align:center;border-top:6px solid var(--c);min-height:390px}
+.value .ico{margin:0 auto 18px;width:64px;height:64px;background:color-mix(in srgb,var(--c) 14%,#fff);color:var(--c)}
+.value .ico svg{width:30px;height:30px}
+.value .n{font-family:var(--serif);font-size:15px;color:var(--c);font-weight:700;margin-bottom:6px}
+.value h3{font-size:19px;line-height:1.25;margin-bottom:14px;color:var(--navy);min-height:48px}
+.value p{font-size:16px;line-height:1.5;color:var(--muted)}
+.foundation{margin-top:30px;text-align:center;font-size:17px;color:var(--navy)}
+.foundation b{color:var(--orange);letter-spacing:.1em;font-size:14px;margin-right:10px}
+
+/* 4 practice */
+.practice{display:grid;grid-template-columns:repeat(4,1fr);gap:22px;margin-top:46px}
+.pr{padding:30px 28px;position:relative;min-height:420px;border-top:6px solid var(--c)}
+.pr .num{font-family:var(--serif);font-size:62px;font-weight:700;color:color-mix(in srgb,var(--c) 22%,#fff);line-height:1;position:absolute;right:24px;top:20px}
+.pr .ico{background:color-mix(in srgb,var(--c) 14%,#fff);color:var(--c);width:60px;height:60px;margin-bottom:22px}
+.pr h3{font-size:25px;color:var(--navy);margin-bottom:16px;line-height:1.2}
+.pr p{font-size:19px;line-height:1.55;color:var(--muted)}
+
+/* 5 diagnostic */
+.dg-top{display:grid;grid-template-columns:1.35fr 1fr 1fr;gap:18px}
+.dg-top .card{padding:18px 22px}
+.dg-top .label{margin-bottom:12px}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:12px 22px}
+.stat b{font-size:25px;font-weight:700;display:block;line-height:1.1}
+.stat span{font-size:12.5px;color:var(--muted);line-height:1.3;display:block}
+.hbar{display:grid;grid-template-columns:120px 1fr;gap:8px 10px;align-items:center;font-size:13px;color:var(--muted)}
+.hbar .b{height:20px;border-radius:3px;display:flex;align-items:center;justify-content:flex-end;padding-right:6px;color:#fff;font-weight:600;font-size:12px;white-space:nowrap}
+.hbar .b.out{justify-content:flex-start;padding:0;color:var(--ink)}
+.domains{display:grid;grid-template-columns:1fr 1fr;gap:9px 34px;margin-top:16px}
+.dom{display:flex;gap:12px;font-size:14px;line-height:1.4;align-items:flex-start}
+.dom .ico{width:32px;height:32px;background:var(--bg-navy);color:var(--navy)}
+.dom .ico svg{width:17px;height:17px}
+.callout{background:var(--bg-orange);color:#b55a0f;font-weight:700;font-style:italic;border-radius:10px;padding:14px 18px;font-size:16px}
+
+/* 6 swot */
+.swot-wrap{display:grid;grid-template-columns:1fr 1fr;gap:26px;margin-top:6px}
+.swot{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.sw{border-radius:12px;padding:14px 16px;background:var(--bg)}
+.sw h4{font-size:16px;margin-bottom:6px;color:var(--c)}
+.sw h4 .L{font-family:var(--serif);font-size:24px;margin-right:6px}
+.sw h4 small{font-weight:500;color:var(--muted);font-size:12px;margin-left:4px}
+.sw ul{padding-left:16px;font-size:13.5px;line-height:1.42}
+.pestle{display:grid;gap:7px}
+.pe{display:flex;gap:12px;align-items:flex-start;font-size:13.5px;line-height:1.38}
+.pe .L{width:32px;height:32px;border-radius:8px;background:var(--navy);color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center;flex:none}
+.tells{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:16px}
+.tells .card{padding:12px 14px;font-size:13px;line-height:1.4}
+.tells h5{font-size:14px;margin-bottom:4px}
+.chain{display:flex;align-items:center;gap:8px;margin-top:14px;font-size:14px}
+.chain .label{color:var(--orange);margin-right:8px;font-size:12px}
+.chain span.st{background:var(--navy);color:#fff;padding:7px 12px;border-radius:999px;font-weight:600;font-size:13px}
+.chain i{color:var(--orange);font-style:normal;font-weight:700}
+
+/* 7 risk categories */
+.rtable{display:grid;grid-template-columns:230px repeat(4,1fr);gap:8px;margin-top:4px}
+.rtable .h{font-size:14px;font-weight:700;color:#fff;background:var(--navy);padding:10px 14px;border-radius:8px;line-height:1.3}
+.rtable .h small{display:block;font-weight:400;opacity:.8;font-size:12.5px}
+.rtable .cat{border-radius:8px;padding:12px 14px;background:var(--bg);border-left:5px solid var(--c)}
+.rtable .cat h4{font-size:17px;color:var(--c);margin-bottom:3px}
+.rtable .cat p{font-size:12.5px;color:var(--muted)}
+.rtable .c{background:#fff;border:1px solid var(--line);border-radius:8px;padding:10px 12px;font-size:12.8px;line-height:1.38}
+.tagP{color:#c46a12;font-weight:800}.tagG{color:var(--red);font-weight:800}.tagC{color:var(--green);font-weight:800}
+.rbottom{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:12px}
+.rbottom div{border-radius:10px;padding:11px 16px;font-size:13.5px;line-height:1.42}
+
+/* 8 mitigation */
+.mt{width:100%;border-collapse:separate;border-spacing:0;font-size:12.2px;line-height:1.27;margin-top:2px}
+.mt th{background:var(--navy);color:#fff;text-align:left;padding:6px 8px;font-size:12.5px;font-weight:600}
+.mt th.st{background:var(--orange)}.mt th.lt{background:var(--green)}
+.mt th:first-child{border-top-left-radius:8px}.mt th:last-child{border-top-right-radius:8px}
+.mt td{padding:4px 8px;border-bottom:1px solid var(--line);vertical-align:middle;background:#fff}
+.mt tr:nth-child(even) td{background:#f7f8fc}
+.mt td:first-child{font-weight:700;color:var(--navy)}
+.mt td.s{background:#fff7ef!important}.mt td.l{background:#f0f9f4!important}
+.mt .tl{font-weight:700;text-align:center;white-space:nowrap}
+.mt .no{color:var(--red);font-weight:700}
+.mt .arrow{color:var(--navy);font-weight:700;display:block;margin-top:2px}
+.legend{display:flex;gap:22px;align-items:center;margin-top:10px;font-size:13px;color:var(--muted)}
+.legend i{display:inline-block;width:12px;height:12px;border-radius:50%;margin-right:6px;vertical-align:-1px}
+
+/* 9 hybrid */
+.spectrum{position:relative;height:150px;margin:62px 0 8px}
+.spectrum .bar{position:absolute;left:150px;right:150px;top:56px;height:16px;border-radius:99px;background:linear-gradient(90deg,var(--blue),#c9cee0 50%,var(--orange))}
+.spectrum .end{position:absolute;top:22px;display:flex;align-items:center;gap:16px}
+.spectrum .end .ico{width:74px;height:74px;color:#fff}
+.spectrum .end .ico svg{width:36px;height:36px}
+.spectrum .end h4{font-size:22px}
+.spectrum .end p{font-size:14px;color:var(--muted)}
+.spectrum .pin{position:absolute;left:36%;top:-6px;transform:translateX(-50%);text-align:center}
+.spectrum .pin .ico{width:86px;height:86px;background:var(--navy);color:#fff;margin:44px auto 0;border:6px solid #fff;box-shadow:0 4px 18px rgba(38,57,127,.35)}
+.spectrum .pin .ico svg{width:40px;height:40px}
+.chosen{position:absolute;left:36%;top:-34px;transform:translateX(-50%);background:var(--navy);color:#fff;border-radius:999px;padding:9px 22px;white-space:nowrap;font-size:15px}
+.chosen b{letter-spacing:.12em;margin-right:8px}
+.closer{text-align:center;font-style:italic;color:var(--muted);font-size:16px;max-width:900px;margin:0 auto 22px}
+.why{display:grid;grid-template-columns:repeat(5,1fr);gap:16px}
+.why .card{padding:20px 20px 16px;display:flex;flex-direction:column;position:relative}
+.why .ico{background:color-mix(in srgb,var(--c) 14%,#fff);color:var(--c);margin-bottom:14px;width:52px;height:52px}
+.why .n{position:absolute;right:18px;top:12px;font-family:var(--serif);font-size:38px;font-weight:700;color:var(--c)}
+.why h4{font-size:18px;color:var(--c);margin-bottom:8px;line-height:1.25}
+.why p{font-size:14.2px;line-height:1.45;color:var(--muted);flex:1}
+.why .ref{margin-top:12px;background:color-mix(in srgb,var(--c) 12%,#fff);color:var(--c);font-size:12px;font-weight:700;text-align:center;border-radius:999px;padding:5px}
+
+/* 10 tools */
+.tools{display:grid;grid-template-columns:170px 1fr;gap:10px 14px;margin-top:6px}
+.phase{border-radius:12px;color:#fff;display:flex;flex-direction:column;justify-content:center;padding:14px 18px;font-weight:700;letter-spacing:.1em;font-size:14px;line-height:1.3;background:var(--c)}
+.phase span{font-size:26px;font-family:var(--serif);letter-spacing:0;opacity:.6}
+.trows{display:grid;gap:6px}
+.trow{display:grid;grid-template-columns:270px 1fr 250px 280px;gap:14px;align-items:center;background:#fff;border:1px solid var(--line);border-left:5px solid var(--c);border-radius:10px;padding:10px 16px;font-size:14.5px;line-height:1.35}
+.trow b{color:var(--navy);font-size:15.5px}
+.trow .who{color:var(--c);font-weight:600}
+.trow .on{color:var(--muted);font-size:13.5px}
+.thead{display:grid;grid-template-columns:270px 1fr 250px 280px;gap:14px;padding:0 21px;font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-left:184px}
+.flag-new{background:var(--orange);color:#fff;border-radius:999px;padding:2px 10px;font-size:12.5px;font-weight:700}
+
+/* 11 tradeoffs */
+.to-wrap{display:grid;grid-template-columns:1.05fr 1fr;gap:34px;margin-top:6px}
+.to{display:grid;gap:10px}
+.to .card{display:grid;grid-template-columns:230px 1fr;gap:18px;padding:14px 20px;align-items:center}
+.to .pair{display:flex;align-items:center;gap:8px;font-weight:700;font-size:16px;color:var(--navy)}
+.to .pair i{font-style:normal;color:var(--orange);font-size:22px}
+.to .t1{font-size:14.5px;margin-bottom:4px}
+.to .t2{font-size:14px;color:var(--muted);line-height:1.4}
+.to .t2 b{color:var(--green)}
+.three{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}
+.three div{border-radius:12px;padding:12px;text-align:center;color:#fff}
+.three b{display:block;font-size:22px;letter-spacing:.1em}
+.three span{font-size:13.5px;opacity:.9}
+.align{display:grid;gap:8px}
+.align .row{display:grid;grid-template-columns:100px 1fr;gap:14px;align-items:center;background:#fff;border:1px solid var(--line);border-radius:10px;padding:10px 14px;font-size:14px;line-height:1.4}
+.align .row b{color:var(--navy);font-size:16px}
+.addline{margin-top:12px;background:var(--bg-orange);border-radius:10px;padding:12px 16px;font-size:15px;color:#9a4d0c}
+
+/* 12 roadmap matrix */
+.matrix{display:grid;grid-template-columns:repeat(5,1fr);gap:16px;margin-top:0;align-items:end;height:640px}
+.yr{display:flex;flex-direction:column;height:100%}
+.yr .card{flex:1;padding:18px 18px 14px;font-size:13.8px;line-height:1.42;border-bottom-left-radius:0;border-bottom-right-radius:0;display:flex;flex-direction:column}
+.yr .goal{font-weight:700;color:var(--navy);font-size:15px;line-height:1.38;margin-bottom:10px}
+.yr .k{font-size:11.5px;font-weight:700;letter-spacing:.12em;color:var(--orange);margin-top:8px}
+.yr .k.g{color:var(--green)}
+.yr .base{color:#fff;text-align:center;font-weight:700;letter-spacing:.12em;padding:16px;font-size:16px;border-bottom-left-radius:12px;border-bottom-right-radius:12px}
+.yr:nth-child(1){padding-top:80px}.yr:nth-child(2){padding-top:60px}.yr:nth-child(3){padding-top:40px}.yr:nth-child(4){padding-top:20px}
+
+/* 13 smart */
+.smart-head{display:grid;grid-template-columns:200px repeat(5,1fr);gap:10px;margin-top:20px}
+.smart-head .score{background:var(--navy);color:#fff;border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.smart-head .score b{font-family:var(--serif);font-size:48px;line-height:1}
+.smart-head .score span{font-size:14px;opacity:.85}
+.crit{border-radius:14px;padding:16px;background:#fff;border:1px solid var(--line);display:flex;gap:14px;align-items:center}
+.crit .L{width:52px;height:52px;border-radius:12px;background:var(--c);color:#fff;font-family:var(--serif);font-size:30px;font-weight:700;display:flex;align-items:center;justify-content:center;flex:none}
+.crit h4{font-size:18px;color:var(--navy)}
+.crit p{font-size:13px;color:var(--muted);line-height:1.35}
+.smart{display:grid;grid-template-columns:200px repeat(5,1fr);gap:10px;margin-top:10px}
+.smart .y{background:var(--navy);color:#fff;border-radius:10px;padding:12px 16px;display:flex;flex-direction:column;justify-content:center}
+.smart .y small{font-size:12px;letter-spacing:.14em;opacity:.7;font-weight:700}
+.smart .y b{font-family:var(--serif);font-size:28px}
+.smart .cell{background:#fff;border:1px solid var(--line);border-radius:10px;padding:10px 12px 10px 38px;font-size:14px;line-height:1.38;position:relative;display:flex;align-items:center}
+.smart .cell::before{content:"";position:absolute;left:11px;top:50%;margin-top:-10px;width:20px;height:20px;border-radius:50%;background:var(--green) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12l5 5 9-10'/%3E%3C/svg%3E") center/13px no-repeat}
+
+/* 14 stakeholders */
+.sh-wrap{display:grid;grid-template-columns:1fr 1fr;gap:40px;margin-top:10px}
+.orbit{position:relative;height:640px}
+.orbit .ring{position:absolute;border-radius:50%;left:50%;top:50%;transform:translate(-50%,-50%)}
+.orbit .r1{width:600px;height:600px;background:radial-gradient(circle,#eef0f8 0,#f6f7fb 70%);border:1px dashed #c9cee0}
+.orbit .r2{width:390px;height:390px;background:#e6e9f4}
+.orbit .hub{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:220px;height:220px;border-radius:50%;background:var(--orange);color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;box-shadow:0 10px 30px rgba(224,123,36,.35)}
+.orbit .hub b{font-size:21px;line-height:1.25}
+.orbit .hub span{font-size:14px;opacity:.9;margin-top:6px}
+.node{position:absolute;width:250px;padding:12px 14px;text-align:center;transform:translate(-50%,-50%)}
+.node h5{font-size:16px;color:var(--c)}
+.node p{font-size:13px;line-height:1.35}
+.node i{font-size:13px;color:var(--orange)}
+.pig{display:grid;grid-template-columns:40px 1fr 1fr;grid-template-rows:1fr 1fr 40px;gap:12px;height:640px}
+.pig .axis-y{grid-row:1/3;writing-mode:vertical-rl;transform:rotate(180deg);text-align:center;font-weight:700;letter-spacing:.2em;font-size:13px;color:var(--muted);border-right:2px solid #9aa1b5;padding-right:8px}
+.pig .axis-x{grid-column:2/4;text-align:center;font-weight:700;letter-spacing:.2em;font-size:13px;color:var(--muted);border-top:2px solid #9aa1b5;padding-top:8px}
+.q{border-radius:14px;padding:22px 24px}
+.q small{font-size:13px;color:var(--muted)}
+.q h4{font-size:26px;margin:8px 0 14px}
+.q p{font-size:16.5px;line-height:1.5}
+.q.hot{background:var(--orange);color:#fff}.q.hot small{color:#ffe3c8}
+
+/* 15 engagement */
+.tline{position:relative;display:grid;grid-template-columns:repeat(5,1fr);gap:16px;margin-top:20px}
+.tline::before{content:"";position:absolute;left:5%;right:5%;top:25px;height:4px;background:linear-gradient(90deg,var(--navy),var(--orange))}
+.ts{position:relative;text-align:center}
+.ts .dot{width:54px;height:54px;border-radius:50%;background:var(--navy);color:#fff;font-family:var(--serif);font-weight:700;font-size:24px;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;border:5px solid #fff;box-shadow:0 2px 10px rgba(0,0,0,.15)}
+.ts:nth-child(5) .dot{background:var(--orange)}
+.ts .card{padding:14px 14px;text-align:left;min-height:204px}
+.ts .when{font-size:13px;font-weight:700;color:var(--orange);letter-spacing:.08em}
+.ts h4{font-size:16px;color:var(--navy);margin:5px 0 10px;line-height:1.3}
+.ts p{font-size:13.5px;line-height:1.4;color:var(--muted)}
+.ts p b{color:var(--ink)}
+.eng-bottom{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:22px}
+.mech{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.mech .card{padding:14px 16px}
+.mech h5{font-size:16px;color:var(--c);margin-bottom:5px}
+.mech p{font-size:13.8px;line-height:1.42;color:var(--muted)}
+.real{background:var(--navy);color:#fff;border-radius:14px;padding:18px 22px}
+.real .label{color:#ffc58e;margin-bottom:10px}
+.real p{font-size:14.3px;line-height:1.45;margin-bottom:8px}
+.real p b{color:#ffc58e}
+
+/* 16 capacity */
+.four{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:14px}
+.four div{border-radius:10px;padding:10px 14px;font-size:14px;line-height:1.35;background:var(--bg);border-left:4px solid var(--c)}
+.four b{color:var(--c)}
+.sec{display:flex;align-items:center;gap:14px;margin:4px 0 8px}
+.sec .label{color:var(--orange)}
+.sec .pill{background:var(--bg-navy);color:var(--navy)}
+.ctab{width:100%;border-collapse:separate;border-spacing:0;font-size:13.3px;line-height:1.35}
+.ctab th{background:var(--navy);color:#fff;text-align:left;padding:7px 10px;font-weight:600;font-size:12.5px}
+.ctab th:first-child{border-top-left-radius:8px}.ctab th:last-child{border-top-right-radius:8px}
+.ctab td{padding:6px 10px;border-bottom:1px solid var(--line);background:#fff}
+.ctab tr:nth-child(even) td{background:#f7f8fc}
+.ctab td:first-child{font-weight:700;color:var(--navy)}
+.ctab td.w{font-weight:700;color:var(--orange);white-space:nowrap}
+
+/* 17 costs */
+.cost-top{display:grid;grid-template-columns:1.2fr 1fr 1fr;gap:18px}
+.cost-top>div>.label{color:var(--orange);margin-bottom:10px;display:block}
+.chart{padding:16px 18px;display:grid;grid-template-columns:1fr 200px;gap:14px}
+.bars{display:flex;align-items:flex-end;gap:16px;height:250px;border-bottom:2px solid #c9cee0;padding:0 6px;position:relative}
+.bars .col{flex:1;display:flex;flex-direction:column-reverse;height:100%;position:relative}
+.bars .seg{width:100%}
+.bars .col .tot{position:absolute;left:0;right:0;text-align:center;font-size:13px;font-weight:700;color:var(--navy)}
+.xlab{display:flex;gap:16px;padding:6px 6px 0;font-size:13px;color:var(--muted)}
+.xlab span{flex:1;text-align:center}
+.lg{display:grid;gap:8px;align-content:start;font-size:13px;line-height:1.3}
+.lg div{display:flex;gap:8px;align-items:flex-start}
+.lg i{width:14px;height:14px;border-radius:50%;flex:none;margin-top:2px}
+.lg b{color:var(--c)}
+.lg .total{display:block;background:var(--navy);color:#fff;border-radius:12px;padding:12px 14px;margin-top:8px}
+.total b{font-family:var(--serif);font-size:30px;display:block;color:#fff}
+.total span{font-size:13px;opacity:.8}
+.fund{display:grid;gap:7px}
+.fund .row{display:grid;grid-template-columns:130px 1fr;gap:12px;align-items:center}
+.fund .tagf{border-radius:8px;padding:9px 6px;text-align:center;font-size:12px;font-weight:700;letter-spacing:.06em;background:var(--bg);color:var(--c)}
+.fund h5{font-size:14px}
+.fund p{font-size:12.8px;color:var(--muted)}
+.bench{font-size:13px;line-height:1.4;margin-top:8px}
+.tech{display:grid;gap:7px}
+.tech div{background:var(--bg-blue);border-radius:10px;padding:9px 13px;font-size:13px;line-height:1.38}
+.tech b{color:var(--blue)}
+.tech em{font-style:normal;font-weight:700;color:var(--navy)}
+.strat{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.strat>div{border-radius:12px;padding:12px 14px;background:var(--bg);display:flex;gap:12px}
+.strat .ico{width:40px;height:40px;background:var(--c);color:#fff}
+.strat .ico svg{width:20px;height:20px}
+.strat h5{font-size:15px;color:var(--c);margin-bottom:3px}
+.strat p{font-size:13px;line-height:1.38}
+.refl{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.refl .card{padding:11px 14px;font-size:13.2px;line-height:1.4}
+.refl .card b{color:var(--navy)}
+.refl .card.urgent b{color:var(--red)}
+
+/* 18 flagship */
+.s-flag .mapf{position:absolute;right:30px;top:20px;width:620px;opacity:.85}
+.s-flag .seal{position:absolute;right:150px;top:110px;width:380px;height:380px;border-radius:50%;border:3px dashed var(--navy);display:flex;align-items:center;justify-content:center}
+.s-flag .seal div{width:270px;height:270px;border-radius:50%;background:var(--orange);display:flex;align-items:center;justify-content:center;box-shadow:0 14px 40px rgba(224,123,36,.45)}
+.s-flag .seal svg{width:130px;height:130px;stroke:#fff;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.s-flag .mark{position:absolute;right:150px;top:510px;width:380px;text-align:center}
+.s-flag .mark .label{color:var(--navy);font-size:17px}
+.s-flag .mark p{color:var(--muted);font-size:16px;margin-top:6px}
+.s-flag h1{font-size:80px;margin-top:6px}
+.s-flag .motto{font-family:var(--serif);font-style:italic;color:var(--orange);font-size:44px;margin-top:6px}
+.s-flag .motto-en{font-size:20px;color:var(--muted);margin-bottom:34px}
+.s-flag h2{font-family:var(--serif);font-size:34px;line-height:1.3;max-width:860px;margin-bottom:16px}
+.s-flag .lead{font-size:20px;line-height:1.5;color:var(--muted);max-width:880px}
+.pillars{position:absolute;left:72px;right:72px;top:600px;display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+.pillars .card{display:flex;gap:22px;padding:24px 26px;align-items:center}
+.pillars .n{font-family:var(--serif);font-size:58px;font-weight:700;color:var(--c);line-height:1}
+.pillars h4{font-size:21px;color:var(--c);margin-bottom:6px}
+.pillars p{font-size:16px;line-height:1.45}
+.flagfoot{position:absolute;left:72px;right:72px;top:790px;display:flex;justify-content:space-between;font-size:17px}
+.flagfoot b{color:var(--orange)}
+.flagfoot i{color:var(--orange);font-family:var(--serif);margin-right:10px}
+</style>
+</head>
+<body>
+<div id="progress"></div>
+<div id="viewport"><div id="stage">
+
+<!-- ================= 1 ================= -->
+<section class="slide s-title" data-title="Governing AI-based medical devices in India">
+  <img class="map" src="assets/india-map.png" alt="">
+  <svg class="ecg" viewBox="0 0 1600 70" preserveAspectRatio="none"><path d="M0 40 H900 l18 -14 l14 14 h20 l18 -38 l20 64 l18 -40 l10 14 h20 l16 -14 l16 14 H1600" fill="none" stroke="#e07b24" stroke-width="3"/></svg>
+  <div class="inner">
+    <div class="kicker anim">AI Governance Roadmap &nbsp;|&nbsp; 2027 to 2031</div>
+    <h1 class="anim">Governing AI-based medical devices in India</h1>
+    <p class="tag anim">A five-year plan for AI in patient care that is proven, explainable and accountable</p>
+    <div class="meta anim">
+      <div><div class="label">Sector</div><div>AI-based medical devices (AI-SaMD and AI-SiMD)</div></div>
+      <div><div class="label">Country</div><div>India</div></div>
+      <div><div class="label">Horizon</div><div>2027 to 2031</div></div>
+    </div>
+    <div class="team anim"><b>Presented by: Group 1</b>Ayush Gupta &nbsp;| Andressa Maria Santos Joswig &nbsp;| Krishna Bahadur Sunar &nbsp;|<br>Diyorbek Hasanov &nbsp;| Priyanka Narad</div>
+  </div>
+</section>
+
+<!-- ================= 2 ================= -->
+<section class="slide" data-title="Vision: proven, tracked, answerable">
+  <div class="kicker"><b>01</b>Vision and guiding principles</div>
+  <h1>By 2031, every AI device in Indian care: proven, tracked, answerable</h1>
+  <div class="vision">
+    <div class="quote anim">
+      <div class="q">“</div>
+      <div class="label">Our 5-year vision (2031)</div>
+      <p>By 2031, India will set the benchmark for trustworthy AI in healthcare: devices validated on India's diverse population, open to public scrutiny through a national registry, and approved under rules that peer regulators choose to rely on.</p>
+      <div class="vyr"><b>2031</b><span>TARGET</span></div>
+    </div>
+    <div class="v-items">
+      <div class="card v-item anim"><div class="ico" style="background:var(--bg-blue);color:var(--blue)"><svg viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div><div><h3 class="c-blue">Problems solved</h3><p>Bring proven AI screening for imaging, ECG, retinal and pathology to districts where specialists are scarce.</p></div></div>
+      <div class="card v-item anim"><div class="ico" style="background:var(--bg-red);color:var(--red)"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M12 8v4M12 16h.01"/></svg></div><div><h3 class="c-red">Risks better managed</h3><p>Catch bias, drift and unsafe updates early, and make every device secure against cyber attack and data misuse by design.</p></div></div>
+      <div class="card v-item anim"><div class="ico" style="background:var(--bg-green);color:var(--green)"><svg viewBox="0 0 24 24"><circle cx="9" cy="7" r="4"/><path d="M3 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2M16 3.1a4 4 0 0 1 0 7.8M21 21v-2a4 4 0 0 0-3-3.9"/></svg></div><div><h3 class="c-green">Who benefits</h3><p>Safer care for patients, AI tools that clinicians can understand and question, and a clear, predictable approval path for innovators.</p></div></div>
+      <div class="card v-item anim"><div class="ico" style="background:var(--bg-orange);color:var(--orange)"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 0 1 0 20M12 2a15 15 0 0 0 0 20"/></svg></div><div><h3 class="c-orange">Trust at home and abroad</h3><p>Publish the safety evidence, so patients trust the device at the bedside and peer regulators accept India's approvals.</p></div></div>
+    </div>
+  </div>
+  <div class="aligned">Aligned with MeitY India AI Governance Guidelines (Nov 2025, seven sutras), ICMR Ethical Guidelines for AI in Biomedical Research and Healthcare (2023) and CDSCO Medical Device Software Guidance (Jul 2026).</div>
+</section>
+
+<!-- ================= 3 ================= -->
+<section class="slide" data-title="Seven values anchor every decision">
+  <div class="kicker"><b>01</b>Vision and guiding principles</div>
+  <h1>Seven values anchor every decision in this roadmap</h1>
+  <div class="label c-orange">Trustworthy AI in Indian healthcare</div>
+  <div class="values">
+    <div class="card value anim" style="--c:var(--blue)"><div class="ico"><svg viewBox="0 0 24 24"><path d="M12 3v18M5 7h14M5 7l-3 7a3 3 0 0 0 6 0zM19 7l-3 7a3 3 0 0 0 6 0zM8 21h8"/></svg></div><div class="n">01</div><h3>Fairness &amp; non-discrimination</h3><p>Proven performance across sex, age, region, language and device type.</p></div>
+    <div class="card value anim" style="--c:var(--navy)"><div class="ico"><svg viewBox="0 0 24 24"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></div><div class="n">02</div><h3>Transparency &amp; explainability</h3><p>Clinicians and patients know when AI is used and how autonomous it is.</p></div>
+    <div class="card value anim" style="--c:var(--orange)"><div class="ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21v-1a6 6 0 0 1 6-6h4a6 6 0 0 1 6 6v1"/></svg></div><div class="n">03</div><h3>Accountability</h3><p>A named legal owner for every algorithm, with clear liability and redress.</p></div>
+    <div class="card value anim" style="--c:var(--green)"><div class="ico"><svg viewBox="0 0 24 24"><circle cx="9" cy="7" r="4"/><path d="M3 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2M16 3.1a4 4 0 0 1 0 7.8M21 21v-2a4 4 0 0 0-3-3.9"/></svg></div><div class="n">04</div><h3>Inclusivity &amp; participation</h3><p>Patients, frontline clinicians and civil society shape the rules.</p></div>
+    <div class="card value anim" style="--c:#8a4fc8"><div class="ico"><svg viewBox="0 0 24 24"><path d="M9 18h6M10 22h4M12 2a7 7 0 0 0-4 12.7V17h8v-2.3A7 7 0 0 0 12 2z"/></svg></div><div class="n">05</div><h3>Innovation-enablement</h3><p>Sandboxes and risk-based change protocols bring safe products to patients sooner.</p></div>
+    <div class="card value anim" style="--c:var(--red)"><div class="ico"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg></div><div class="n">06</div><h3>Security, safety &amp; resilience</h3><p>Patient safety first, secure by design against cyber attack and misuse.</p></div>
+    <div class="card value anim" style="--c:#1a8fa0"><div class="ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 0 1 0 20M12 2a15 15 0 0 0 0 20"/></svg></div><div class="n">07</div><h3>Global alignment</h3><p>Interoperable with IMDRF, WHO, ISO/IEC standards and peer regulators.</p></div>
+  </div>
+  <div class="foundation"><b>FOUNDATION</b>MeitY AI Governance Guidelines &nbsp;·&nbsp; ICMR AI ethics &nbsp;·&nbsp; CDSCO Medical Device Software Guidance</div>
+</section>
+
+<!-- ================= 4 ================= -->
+<section class="slide" data-title="Principles in day-to-day practice">
+  <div class="kicker"><b>01</b>Vision and guiding principles</div>
+  <h1>How the principles show up in day-to-day practice</h1>
+  <div class="practice">
+    <div class="card pr anim" style="--c:var(--navy)"><div class="num">01</div><div class="ico"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M8 13h8M8 17h5"/></svg></div><h3>Policy design</h3><p>Binding rules for algorithm change protocols, Indian-population validation, DPDP-compliant data use and liability guidance.</p></div>
+    <div class="card pr anim" style="--c:var(--orange)"><div class="num">02</div><div class="ico"><svg viewBox="0 0 24 24"><path d="M3 21h18M5 21V10M19 21V10M9 21V10M15 21V10M2 10l10-7 10 7z"/></svg></div><h3>Institutional choices</h3><p>CDSCO leads licensing, ICMR sets ethics, Data Protection Board and CERT-In cover data and cyber, AI Safety Institute supports testing.</p></div>
+    <div class="card pr anim" style="--c:var(--green)"><div class="num">03</div><div class="ico"><svg viewBox="0 0 24 24"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.6 2.6-2.4-.6-.6-2.4z"/></svg></div><h3>Technical practices</h3><p>Bias audits, algorithm change protocols, software bills of materials, sandboxes and a public AI-device registry.</p></div>
+    <div class="card pr anim" style="--c:var(--red)"><div class="num">04</div><div class="ico"><svg viewBox="0 0 24 24"><path d="M7 4L3 8l4 4M3 8h14M17 20l4-4-4-4M21 16H7"/></svg></div><h3>Conflicts and trade-offs</h3><p>Speed vs evidence, data access vs privacy, optional vs mandatory change control. Settled by risk class: stricter for Class C and D.</p></div>
+  </div>
+  <div class="src">Sources: MeitY India AI Governance Guidelines (Nov 2025); ICMR AI Ethical Guidelines (2023); CDSCO/MD/GD/MDSW/01/2026.</div>
+</section>
+
+<!-- ================= 5 ================= -->
+<section class="slide" data-title="Current state: national scale today">
+  <div class="kicker"><b>02</b>Current state diagnostic</div>
+  <h1>National scale today; lifecycle governance must catch up</h1>
+  <p class="sub" style="margin-bottom:14px">The scale is already national. The next task is to make safety, updates and accountability equally scalable.</p>
+  <div class="dg-top">
+    <div class="card anim"><div class="label c-navy">Digital + AI scale</div>
+      <div class="stats">
+        <div class="stat"><b class="c-navy">105 crore</b><span>health records linked to 93.95 crore ABHA numbers (ABDM, Jul 2026)</span></div>
+        <div class="stat"><b class="c-green">50 crore</b><span>eSanjeevani teleconsultations; AI-powered CDSS integrated (Oct 2026)</span></div>
+        <div class="stat"><b class="c-navy">28.2 crore</b><span>consultations supported by AI-CDSS (Apr 2023–Nov 2025)</span></div>
+        <div class="stat"><b class="c-green">38,000+</b><span>IndiaAI GPUs available at subsidised rates</span></div>
+        <div class="stat"><b class="c-orange">7,541</b><span>AIKosh datasets + 273 AI models across 20 sectors</span></div>
+        <div class="stat"><b class="c-orange">Feb 2026</b><span>SAHI and BODH launched for responsible health AI and benchmarking</span></div>
+      </div>
+    </div>
+    <div class="card anim"><div class="label c-orange">MedTech scale</div>
+      <div style="font-size:15px;margin-bottom:4px"><b class="c-orange" style="font-size:26px">US$14B</b> market today*</div>
+      <div style="font-size:15px;margin-bottom:14px"><b class="c-orange" style="font-size:26px">$30–50B</b> projected this decade*</div>
+      <div style="font-size:12.5px;color:var(--muted);margin-bottom:8px;text-align:center">₹ lakh crore, FY2024–25: imports ₹1.37L Cr vs exports ₹42,360 Cr (3.2×)</div>
+      <div class="hbar" style="grid-template-columns:60px 1fr">
+        <span>Exports</span><div><div class="b" style="width:28%;background:var(--green)">0.42</div></div>
+        <span>Imports</span><div><div class="b" style="width:92%;background:var(--red)">1.37</div></div>
+      </div>
+      <div style="font-size:11.5px;color:var(--muted);font-style:italic;margin-top:12px">*FICCI-DUA estimate cited by Department of Pharmaceuticals</div>
+    </div>
+    <div class="card anim"><div class="label c-green">Public investment + policy</div>
+      <div style="font-size:13px;color:var(--muted);text-align:center;margin-bottom:10px">Committed outlays (₹ crore)</div>
+      <div class="hbar">
+        <span>IndiaAI Mission</span><div><div class="b" style="width:90%;background:var(--green)">₹10,372</div></div>
+        <span>Medical-device PLI</span><div style="display:flex;gap:6px;align-items:center"><div class="b" style="width:29.7%;background:var(--green)"></div><b style="font-size:13px;color:var(--ink)">₹3,420</b></div>
+        <span>SMDI</span><div style="display:flex;gap:6px;align-items:center"><div class="b" style="width:4.3%;background:var(--green)"></div><b style="font-size:13px;color:var(--ink)">₹500</b></div>
+      </div>
+      <div style="background:var(--bg-green);border-radius:8px;padding:10px 12px;margin-top:16px;font-size:13.5px"><b class="c-green">2026</b> SAHI + BODH launched; MDR/CDSCO MDSW already apply</div>
+    </div>
+  </div>
+  <div class="label c-navy" style="margin-top:16px">Diagnostic by domain</div>
+  <div class="domains">
+    <div class="dom"><div class="ico"><svg viewBox="0 0 24 24"><path d="M12 3v18M5 7h14M5 7l-3 7a3 3 0 0 0 6 0zM19 7l-3 7a3 3 0 0 0 6 0z"/></svg></div><div><b>Policy &amp; legal:</b> MDR 2017 regulates medical devices; CDSCO issued final MDSW guidance in Jul 2026. DPDP core duties begin May 2027; no dedicated AI-device statute.</div></div>
+    <div class="dom"><div class="ico"><svg viewBox="0 0 24 24"><path d="M22 7l-8.5 8.5-5-5L2 17M16 7h6v6"/></svg></div><div><b>Economy &amp; innovation:</b> Medical-device market is about US$14B and projected at US$30–50B within this decade (industry estimate cited by DoP). Public schemes support AI and MedTech.</div></div>
+    <div class="dom"><div class="ico"><svg viewBox="0 0 24 24"><path d="M3 21h18M5 21V10M19 21V10M9 21V10M15 21V10M2 10l10-7 10 7z"/></svg></div><div><b>Institutions:</b> CDSCO regulates devices; MoHFW launched SAHI and BODH; ICMR provides AI ethics guidance; NHA, DPB and CERT-In cover digital health, data and cyber.</div></div>
+    <div class="dom"><div class="ico"><svg viewBox="0 0 24 24"><path d="M10.3 3.9L1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0zM12 9v4M12 17h.01"/></svg></div><div><b>Risks &amp; public trust:</b> Bias, drift, poor generalisability, unsafe updates and cyber incidents remain key risks. AIIMS Delhi ransomware (2022) showed operational vulnerability.</div></div>
+    <div class="dom"><div class="ico"><svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="7" rx="2"/><rect x="2" y="14" width="20" height="7" rx="2"/><path d="M6 6.5h.01M6 17.5h.01"/></svg></div><div><b>Technology &amp; infrastructure:</b> ABDM: 105 crore linked records. IndiaAI: 38,000+ GPUs. AIKosh: 7,541 datasets and 273 models. eSanjeevani has crossed 50 crore consultations.</div></div>
+    <div class="dom"><div class="ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 0 1 0 20M12 2a15 15 0 0 0 0 20"/></svg></div><div><b>Global alignment:</b> <b class="c-green">3rd</b> in AI vibrancy (Stanford, 2025) but <b class="c-red">46th of 135</b> in responsible AI (GIRAI 2026, score 41.8). Zero on public disclosure of government algorithms.</div></div>
+    <div class="dom"><div class="ico"><svg viewBox="0 0 24 24"><path d="M22 10L12 5 2 10l10 5 10-5zM6 12v5c3 2 9 2 12 0v-5"/></svg></div><div><b>Human capacity:</b> AI audit skills among reviewers, test labs and hospital teams are not publicly benchmarked. A national baseline is still needed.</div></div>
+    <div class="callout">Third in AI capability, 46th in responsible AI: lifecycle governance must catch up.</div>
+  </div>
+  <div class="src" style="bottom:52px">Sources: PIB 2283272 (ABDM); PIB 2319427 (eSanjeevani/AI-CDSS); PIB 2225781 (IndiaAI); PIB 2229226 (SAHI/BODH); PIB 2239563 (trade); PIB 2288770 (PLI/SMDI); PIB 2296077 (market).</div>
+</section>
+
+<!-- ================= 6 ================= -->
+<section class="slide" data-title="SWOT and PESTLE">
+  <div class="kicker"><b>02</b>Current state diagnostic</div>
+  <h1>Strong building blocks; the gap is integrated lifecycle control</h1>
+  <div class="swot-wrap">
+    <div>
+      <div class="label c-orange" style="margin-bottom:8px">SWOT: internal and external</div>
+      <div class="swot">
+        <div class="sw anim" style="--bg:var(--bg-green);--c:var(--green)"><h4><span class="L">S</span>Strengths<small>internal</small></h4><ul><li>MDR 2017 risk-based licensing + CDSCO MDSW guidance (2026)</li><li>Population-scale ABDM and eSanjeevani infrastructure</li><li>SAHI + BODH + ICMR ethical guidance for health AI</li></ul></div>
+        <div class="sw anim" style="--bg:var(--bg-red);--c:var(--red)"><h4><span class="L">W</span>Weaknesses<small>internal</small></h4><ul><li>Adaptive change-control remains guidance rather than a binding lifecycle rule</li><li>No public AI-device registry with version and performance history</li><li>AI audit, subgroup testing and hospital cyber capacity are uneven and not benchmarked</li></ul></div>
+        <div class="sw anim" style="--bg:var(--bg-blue);--c:var(--blue)"><h4><span class="L">O</span>Opportunities<small>external</small></h4><ul><li>BODH/ABDM can support Indian-population validation and benchmarking</li><li>IndiaAI compute and AIKosh lower barriers to local development and testing</li><li>US$14B MedTech market + public support schemes create a translation pathway</li></ul></div>
+        <div class="sw anim" style="--bg:var(--bg-orange);--c:var(--orange)"><h4><span class="L">T</span>Threats<small>external</small></h4><ul><li>Foreign-trained models may not generalise across Indian populations and workflows</li><li>Model drift and unsafe updates can change risk after approval</li><li>Ransomware, data breach and automation bias can scale harm quickly</li></ul></div>
+      </div>
+    </div>
+    <div>
+      <div class="label c-orange" style="margin-bottom:8px">PESTLE: the external view</div>
+      <div class="pestle">
+        <div class="pe"><span class="L">P</span><div><b>Political.</b> SAHI and BODH launched in 2026; sector regulators lead under an existing-law approach, with no dedicated AI regulator.</div></div>
+        <div class="pe"><span class="L">E</span><div><b>Economic.</b> ~US$14B MedTech market; ₹3,420 crore device PLI + ₹500 crore SMDI. FY2024–25 imports were 3.2× exports.</div></div>
+        <div class="pe"><span class="L">S</span><div><b>Social.</b> 50 crore eSanjeevani consultations show population-scale digital adoption; trust depends on visible safety and redress.</div></div>
+        <div class="pe"><span class="L">T</span><div><b>Technological.</b> 105 crore linked health records, 38,000+ GPUs and BODH create scale for testing, while bias, drift and poor generalisability remain.</div></div>
+        <div class="pe"><span class="L">L</span><div><b>Legal.</b> MDR 2017 + CDSCO MDSW guidance; DPDP Act/Rules; IT Act/CERT-In; Consumer Protection Act. Obligations remain distributed across regimes.</div></div>
+        <div class="pe"><span class="L">E</span><div><b>Environmental.</b> Compute energy and device e-waste are not yet central to AI-device oversight but will matter as deployment scales.</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="label c-orange" style="margin-top:14px">What the diagnostic tells us</div>
+  <div class="tells" style="margin-top:8px">
+    <div class="card"><h5 class="c-green">Top 3 enablers</h5>1. ABDM + eSanjeevani scale. 2. SAHI/BODH + MDR/CDSCO foundations. 3. IndiaAI compute and MedTech investment.</div>
+    <div class="card"><h5 class="c-red">Top 3 blockers</h5>1. Lifecycle duties are fragmented. 2. No public version/performance registry. 3. Limited independent audit, cyber and redress capacity.</div>
+    <div class="card"><h5 class="c-blue">Ambition vs reality</h5>India has strategy, benchmarking and device regulation; the roadmap must connect them into traceable, enforceable lifecycle controls.</div>
+    <div class="card"><h5 class="c-orange">Years 1-2 priority</h5>Connect CDSCO + SAHI/BODH + ABDM: build the oversight cell, sandbox, Indian validation rules and adaptive change-control first.</div>
+  </div>
+  <div class="chain"><span class="label">Next gap: connect the pieces into one lifecycle system</span>
+    <span class="st">Validate</span><i>→</i><span class="st">License</span><i>→</i><span class="st">Monitor</span><i>→</i><span class="st">Control updates</span><i>→</i><span class="st">Disclose performance</span><i>→</i><span class="st">Detect harm</span><i>→</i><span class="st" style="background:var(--orange)">Redress</span></div>
+</section>
+
+<!-- ================= 7 ================= -->
+<section class="slide" data-title="AI risk categories">
+  <div class="kicker"><b>03</b>Priority risks and mitigation</div>
+  <h1 style="font-size:40px">AI Risk Categories: Brainstorming Potential AI Risks</h1>
+  <div class="rtable">
+    <div></div>
+    <div class="h">Identification<small>Which risks, and past cases?</small></div>
+    <div class="h">Impact<small>Who and what is hurt most?</small></div>
+    <div class="h">Governance gap<small>Do laws and regulators cover it?</small></div>
+    <div class="h">Mitigation<small>Short-term now, long-term later</small></div>
+
+    <div class="cat" style="--bg:var(--bg-blue);--c:var(--blue)"><h4>Technical</h4><p>Bias, explainability, reliability, cyber</p></div>
+    <div class="c">Bias, opaque outputs, drift and cyber flaws. Cases: a sepsis model missed 2 in 3 cases when tested independently (JAMA IM 2021); pulse oximeters hid low oxygen ~3× more often in Black patients (NEJM 2020).</div>
+    <div class="c">Missed or wrong diagnoses at screening scale, worst for groups missing from training data. Hospital ransomware (AIIMS 2022) is a national-security threat.</div>
+    <div class="c"><span class="tagP">PARTLY</span> CDSCO guidance names these risks but is advisory; change protocol is optional; no device cyber standard is named.</div>
+    <div class="c"><b>Now:</b> Indian validation for Class C and D; mandatory change protocol; named cyber standards.<br><b>Later:</b> BODH fairness testing; real-world monitoring; CERT-In device testing.</div>
+
+    <div class="cat" style="--bg:var(--bg-orange);--c:var(--orange)"><h4>Social &amp; ethical</h4><p>Exclusion, misinformation, trust, jobs</p></div>
+    <div class="c">Exclusion of under-served patients, misinformation from generative AI, loss of trust, changing jobs. Cases: retinal AI in Thai clinics struggled with poor-quality images (CHI 2020); dermatology AI did worse on dark skin (Sci Adv 2022).</div>
+    <div class="c">Rural, tribal, low-literacy and older patients lose out first; imaging and lab staff need reskilling; trust in digital health falls.</div>
+    <div class="c"><span class="tagG">GAP</span> No duty to tell patients that AI was used; no patient AI-literacy programme.</div>
+    <div class="c"><b>Now:</b> Disclose AI use in local languages; human sign-off for diagnosis.<br><b>Later:</b> NMC curricula; staff reskilling; community monitors on audits.</div>
+
+    <div class="cat" style="--bg:var(--bg-navy);--c:var(--navy)"><h4>Legal &amp; governance</h4><p>Data protection, accountability, split mandates</p></div>
+    <div class="c">Weak data protection, accountability gaps, fragmented mandates. Case: when AI errs, there is no clear answer to who is liable: developer, hospital or clinician.</div>
+    <div class="c">Patients cannot get redress; privacy and consent rights are at risk; innovators face legal uncertainty.</div>
+    <div class="c"><span class="tagP">PARTLY</span> DPDP core duties start May 2027; no AI-specific liability; mandates split across CDSCO, DPB, CERT-In, ICMR and NHA.</div>
+    <div class="c"><b>Now:</b> Oversight Cell to coordinate; patient grievance channel; DPDP-ready consent.<br><b>Later:</b> Liability guidance under CPA 2019 and MDR; registry mandate.</div>
+
+    <div class="cat" style="--bg:var(--bg-green);--c:var(--green)"><h4>Environmental</h4><p>Energy, carbon, e-waste</p></div>
+    <div class="c">High energy use for training and running models, carbon footprint, and e-waste from retired devices and servers.</div>
+    <div class="c">Higher energy costs for hospitals and data centres; more e-waste; a growing climate cost as AI scales.</div>
+    <div class="c"><span class="tagG">GAP</span> E-waste rules exist, but the energy use of AI devices is not tracked or reported.</div>
+    <div class="c"><b>Now:</b> Voluntary reporting of compute and energy use in the registry.<br><b>Later:</b> Green procurement criteria; take-back under e-waste rules.</div>
+  </div>
+  <div class="rbottom">
+    <div style="background:var(--bg-red)"><b class="c-red">ARE ENFORCEMENT BODIES EQUIPPED? Not yet.</b> CDSCO has no dedicated AI-device unit; AI audit skills among reviewers, test labs and hospitals are not benchmarked; device cyber-testing is thin. <b>Fix:</b> Oversight Cell, certified reviewer training and accredited labs in Years 1-2.</div>
+    <div style="background:var(--bg-green)"><b class="c-green">BALANCING RISK AND INNOVATION</b><br><b>Proportionate:</b> light for Class A and B, strict for C and D. <b>Sandbox:</b> test early on real Indian data, under supervision. <b>Pre-agreed updates:</b> improve models without re-approval, within limits.</div>
+  </div>
+  <div class="src" style="bottom:50px;font-size:11.5px">Sources: Wong 2021 (JAMA IM); Sjoding 2020 (NEJM); Beede 2020 (ACM CHI); Daneshjou 2022 (Sci Adv); CDSCO MDSW (Jul 2026); DPDP Rules 2025; Healthcare IT News (AIIMS 2022); MeitY AI Governance Guidelines (Nov 2025).</div>
+</section>
+
+<!-- ================= 8 ================= -->
+<section class="slide" data-title="Risk mitigation template">
+  <div class="kicker"><b>03</b>Priority risks and mitigation</div>
+  <h1 style="font-size:40px">Risk Mitigation Template: Mapping Risks to Actions</h1>
+  <table class="mt">
+    <thead><tr><th style="width:140px">Risk area</th><th style="width:190px">Why it matters (impact)</th><th class="st" style="width:180px">Short-term action (Years 1-2)</th><th class="lt" style="width:180px">Long-term action (Years 3-5)</th><th style="width:170px">Responsible stakeholders (owner today)</th><th style="width:80px">Timeline</th><th style="width:240px">Do current laws cover it? What is needed?</th><th>International cooperation</th></tr></thead>
+    <tbody>
+      <tr><td>Bias and poor generalisability</td><td>Foreign-trained models may fail on Indian sub-populations; skin-tone gaps already seen in dermatology AI.</td><td class="s">Make Indian-population validation binding for Class C and D; publish subgroup results.</td><td class="l">Independent fairness testing on BODH benchmarks; subgroup results in the Suraksha registry.</td><td>CDSCO, ICMR, test labs, hospitals<br>Today: CDSCO</td><td class="tl c-orange">Years 1-3</td><td><span class="tagP">PARTLY</span> CDSCO guidance asks for Indian validation, but it is advisory<span class="arrow">→ New binding rule for Class C and D</span></td><td>High: shared benchmarks, IMDRF GMLP</td></tr>
+      <tr><td>Model drift and unsafe updates</td><td>Real-world performance can fall far below claims (a sepsis model missed 2 in 3 cases); change protocol is optional.</td><td class="s">Mandatory Algorithm Change Protocol for adaptive AI.</td><td class="l">Real-world performance monitoring and periodic safety reports linked to the registry.</td><td>CDSCO, manufacturers, hospitals<br>Today: CDSCO</td><td class="tl c-red">Years 1-2</td><td><span class="tagP">PARTLY</span> Change protocol is optional ("may be devised")<span class="arrow">→ New binding rule: mandatory change protocol</span></td><td>High: align with FDA PCCP and EU AI Act</td></tr>
+      <tr><td>Cyber attack and health-data breach</td><td>AIIMS Delhi ransomware (2022) halted digital services; DPDP fines reach ₹250 crore.</td><td class="s">Name IEC 81001-5-1 and ISO/IEC 27001; software bill of materials; CERT-In reporting; 72-hour breach notice.</td><td class="l">CERT-In device cyber-testing unit; annual health-sector drills.</td><td>CERT-In, Data Protection Board, CDSCO, hospitals<br>Today: Split: CERT-In, DPB, CDSCO</td><td class="tl c-red">Annual</td><td><span class="tagP">PARTLY</span> CERT-In Directions 2022 and DPDP safeguards; no device cyber standard named<span class="arrow">→ Better enforcement + named standards</span></td><td>High: threat sharing, IEC 81001-5-1</td></tr>
+      <tr><td>Opaque decisions and automation bias</td><td>Clinicians may over-trust AI; patients may not know AI was used.</td><td class="s">Disclose intended use and autonomy level; human sign-off for diagnosis and treatment.</td><td class="l">NMC-backed clinician training; explainability expectations in sectoral guidelines.</td><td>CDSCO, ICMR, NMC, hospitals<br><span class="no">Today: NO OWNER (hospital use of AI)</span></td><td class="tl c-blue">Years 2-4</td><td><span class="tagG">GAP</span> No duty to disclose AI use or autonomy level<span class="arrow">→ New rule + NMC training</span></td><td>Low: mostly domestic</td></tr>
+      <tr><td>No liability or redress route</td><td>Unclear who answers for harm: developer, hospital or clinician.</td><td class="s">Patient grievance channel; adverse-event reporting through the Materiovigilance Programme.</td><td class="l">AI-device liability guidance under Consumer Protection Act 2019 and MDR; public incident registry.</td><td>MoHFW, Consumer Affairs, CDSCO<br><span class="no">Today: NO OWNER</span></td><td class="tl c-blue">Years 3-4</td><td><span class="tagG">GAP</span> No AI-specific route; general Consumer Protection Act only<span class="arrow">→ New guidance under CPA 2019 and MDR</span></td><td>Low: domestic courts</td></tr>
+      <tr><td>Training-data privacy and consent</td><td>AI development uses sensitive health records; DPDP core duties begin 13 May 2027.</td><td class="s">Purpose-limited consent; de-identification standard; ethics committee review.</td><td class="l">Federated, privacy-preserving evaluation across hospitals; consent managers.</td><td>Data Protection Board, ICMR, NHA, developers<br>Today: Data Protection Board</td><td class="tl c-orange">Years 1-2, ongoing</td><td><span class="tagC">COVERED</span> DPDP Act 2023 and Rules 2025<span class="arrow">→ Better adherence as core duties start (May 2027)</span></td><td>Medium: cross-border data transfers</td></tr>
+      <tr><td>Generative AI in clinical software</td><td>CDSCO guidance names hallucination as an AI risk.</td><td class="s">Watch now.</td><td class="l">Rules by Year 5.</td><td>To be assigned<br><span class="no">Today: NO OWNER</span></td><td class="tl c-blue">Year 5</td><td><span class="tagG">GAP</span> Guidance names hallucination, sets no rules<span class="arrow">→ Watch now, rules by Year 5</span></td><td>High: WHO guidance on large multi-modal models</td></tr>
+    </tbody>
+  </table>
+  <div class="legend"><span><i style="background:var(--red)"></i>Most urgent</span><span><i style="background:var(--orange)"></i>Early</span><span><i style="background:var(--blue)"></i>Mid-term</span><span style="margin-left:auto;font-style:italic">Short-term actions use existing powers; long-term actions build new capacity. Red "Today" = no owner yet.</span></div>
+  <div class="src" style="bottom:50px;font-size:11.5px">Sources: CDSCO MDSW (2026); DPDP Act and Rules (₹250 crore, 72 hours); CERT-In Directions 2022; CPA 2019; Wong 2021; Daneshjou 2022; WHO LMM guidance. Owners and timelines are team proposals.</div>
+</section>
+
+<!-- ================= 9 ================= -->
+<section class="slide" data-title="Governance model: hybrid">
+  <div class="kicker"><b>04</b>Governance model</div>
+  <h1>Our model: Hybrid, risk classes plus rights safeguards</h1>
+  <div class="spectrum">
+    <div class="bar"></div>
+    <div class="end" style="left:0"><div class="ico" style="background:var(--blue)"><svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div></div>
+    <div class="end" style="left:0;top:104px;display:block"><h4 class="c-blue">Risk-based</h4><p>Regulates by risk level (EU AI Act style)</p></div>
+    <div class="end" style="right:0"><div class="ico" style="background:var(--orange)"><svg viewBox="0 0 24 24"><path d="M11 14h2a2 2 0 1 0 0-4h-3c-.6 0-1.1.2-1.4.6L3 16"/><path d="M7 20l1.6-1.4c.3-.4.8-.6 1.4-.6h4c1.1 0 2.1-.4 2.8-1.2l4.6-4.4a2 2 0 0 0-2.8-2.8l-4.2 3.9"/></svg></div></div>
+    <div class="end" style="right:0;top:104px;display:block;text-align:right"><h4 class="c-orange">Rights-based</h4><p>Regulates through fundamental rights (UNESCO style)</p></div>
+    <div class="chosen"><b>CHOSEN MODEL: HYBRID</b>risk classes as the base, rights safeguards on top</div>
+    <div class="pin"><div class="ico"><svg viewBox="0 0 24 24"><path d="M5 12l5 5 9-10"/></svg></div></div>
+  </div>
+  <p class="closer">Closer to the risk end: India already classifies devices by risk, so we build on that law and add rights safeguards where risk class alone falls short.</p>
+  <div class="label c-orange" style="margin-bottom:10px">Why hybrid is the right fit for India</div>
+  <div class="why">
+    <div class="card anim" style="--c:var(--blue)"><span class="n">1</span><div class="ico"><svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div><h4>The risk base already exists</h4><p>MDR 2017 sorts devices into Classes A to D. CDSCO's Jul 2026 software guidance classifies software by how much its output drives decisions and how serious the condition is.</p><div class="ref">MDR 2017 · CDSCO MDSW</div></div>
+    <div class="card anim" style="--c:var(--red)"><span class="n">2</span><div class="ico"><svg viewBox="0 0 24 24"><path d="M10.3 3.9L1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0zM12 9v4M12 17h.01"/></svg></div><h4>AI risks need firmer duties</h4><p>CDSCO names bias, lack of explainability, drift, poor generalisability and hallucination, but the guidance is advisory and change protocols depend on each product's risk.</p><div class="ref">CDSCO MDSW, 21 Jul 2026</div></div>
+    <div class="card anim" style="--c:var(--orange)"><span class="n">3</span><div class="ico"><svg viewBox="0 0 24 24"><path d="M11 14h2a2 2 0 1 0 0-4h-3c-.6 0-1.1.2-1.4.6L3 16"/><path d="M7 20l1.6-1.4c.3-.4.8-.6 1.4-.6h4c1.1 0 2.1-.4 2.8-1.2l4.6-4.4a2 2 0 0 0-2.8-2.8l-4.2 3.9"/></svg></div><h4>Risk class misses rights</h4><p>ICMR's 10 patient-centric principles (autonomy, privacy, accountability, fairness) and DPDP data rights, with core duties from May 2027, need their own safeguards.</p><div class="ref">ICMR 2023 · DPDP Rules 2025</div></div>
+    <div class="card anim" style="--c:var(--navy)"><span class="n">4</span><div class="ico"><svg viewBox="0 0 24 24"><path d="M3 21h18M5 21V10M19 21V10M9 21V10M15 21V10M2 10l10-7 10 7z"/></svg></div><h4>Fits India's AI policy</h4><p>MeitY's guidelines propose no standalone AI law: sector regulators lead and an AI Safety Institute supports testing. So CDSCO leads, not a new regulator.</p><div class="ref">MeitY, 5 Nov 2025</div></div>
+    <div class="card anim" style="--c:var(--green)"><span class="n">5</span><div class="ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 0 1 0 20M12 2a15 15 0 0 0 0 20"/></svg></div><h4>Speaks the global language</h4><p>IMDRF good machine learning practice, FDA change-control plans and the EU AI Act all pair risk-based oversight with lifecycle controls. CDSCO joined IMDRF as an affiliate in 2024.</p><div class="ref">IMDRF N88 · FDA · EU</div></div>
+  </div>
+  <div class="src" style="bottom:50px;font-size:11.5px">Sources: MDR 2017; CDSCO/MD/GD/MDSW/01/2026 (21 Jul 2026); ICMR AI Ethical Guidelines (Mar 2023); DPDP Rules 2025; MeitY India AI Governance Guidelines (5 Nov 2025); IMDRF N88 GMLP (Jan 2025); FDA PCCP guidance (Dec 2024); MoHFW (IMDRF affiliate, 2024).</div>
+</section>
+
+<!-- ================= 10 ================= -->
+<section class="slide" data-title="Ten oversight tools">
+  <div class="kicker"><b>04</b>Governance model</div>
+  <h1>Ten oversight tools cover the whole device lifecycle</h1>
+  <div class="thead"><span>Oversight tool</span><span>What it does</span><span>Who leads</span><span>Builds on</span></div>
+  <div class="tools" style="margin-top:8px">
+    <div class="phase" style="--c:var(--navy)"><span>01</span>BEFORE MARKET</div>
+    <div class="trows">
+      <div class="trow" style="--c:var(--navy)"><b>Algorithmic impact assessment</b><span>Risk and rights review before approving Class C and D AI devices</span><span class="who">CDSCO + ICMR ethics committees</span><span class="on">CDSCO MDSW classes; ICMR 2023</span></div>
+      <div class="trow" style="--c:var(--navy)"><b>Regulatory sandbox</b><span>Supervised testing on consented, de-identified Indian data</span><span class="who">CDSCO + IndiaAI Safety Institute</span><span class="on">MeitY guidelines; BODH</span></div>
+      <div class="trow" style="--c:var(--navy)"><b>Conformity assessment</b><span>Checks on quality system, software lifecycle and risk management</span><span class="who">CDSCO + notified bodies</span><span class="on">MDR 2017; ISO 13485, IEC 62304, ISO 14971</span></div>
+      <div class="trow" style="--c:var(--navy)"><b>Sectoral guidelines</b><span>Clinical performance rules for radiology, cardiology, pathology and eye AI</span><span class="who">CDSCO + clinical societies</span><span class="on">IMDRF GMLP (N88)</span></div>
+    </div>
+    <div class="phase" style="--c:var(--blue)"><span>02</span>MARKET ENTRY</div>
+    <div class="trows">
+      <div class="trow" style="--c:var(--blue)"><b>Transparency rules</b><span>Label intended use, autonomy level and a training-data summary</span><span class="who">CDSCO</span><span class="on">WHO 2023; IMDRF GMLP</span></div>
+      <div class="trow" style="--c:var(--blue)"><b>AI registry (Suraksha)</b><span>Public list of licensed AI devices with version history</span><span class="who">CDSCO + NHA</span><span class="on"><span class="flag-new">Our flagship (new)</span></span></div>
+    </div>
+    <div class="phase" style="--c:var(--green)"><span>03</span>AFTER MARKET</div>
+    <div class="trows">
+      <div class="trow" style="--c:var(--green)"><b>Independent audits</b><span>Bias, performance and cybersecurity audits by accredited labs</span><span class="who">Test labs + CERT-In</span><span class="on">IEC 81001-5-1; ISO/IEC 27001</span></div>
+      <div class="trow" style="--c:var(--green)"><b>Change control + real-world monitoring</b><span>Pre-agreed limits for model updates; drift and incident tracking</span><span class="who">Manufacturers + hospitals</span><span class="on">CDSCO change protocol; FDA PCCP</span></div>
+    </div>
+    <div class="phase" style="--c:var(--orange)"><span>04</span>WHEN HARM OCCURS</div>
+    <div class="trows">
+      <div class="trow" style="--c:var(--orange)"><b>Redress mechanism</b><span>Patient grievance channel and adverse-event reporting</span><span class="who">CDSCO + Materiovigilance Programme</span><span class="on">MvPI; Consumer Protection Act 2019</span></div>
+      <div class="trow" style="--c:var(--orange)"><b>Liability framework</b><span>Clear duties for developer, hospital and clinician</span><span class="who">MoHFW + Consumer Affairs</span><span class="on">Consumer Protection Act 2019</span></div>
+    </div>
+  </div>
+  <div class="src" style="bottom:52px">Sources: MDR 2017; CDSCO MDSW (Jul 2026); ICMR (2023); MeitY (Nov 2025); IMDRF N88; WHO (2023); FDA PCCP (2024); Consumer Protection Act 2019. Lead agencies are team proposals.</div>
+</section>
+
+<!-- ================= 11 ================= -->
+<section class="slide" data-title="Trade-offs and global alignment">
+  <div class="kicker"><b>04</b>Governance model</div>
+  <h1>Trade-offs we accept, and how we stay aligned with the world</h1>
+  <div class="to-wrap">
+    <div>
+      <div class="label c-orange" style="margin-bottom:10px">Identified trade-offs, and how we manage them</div>
+      <div class="to">
+        <div class="card anim"><div class="pair">Innovation <i>⇄</i> Regulation</div><div><div class="t1">Stricter evidence slows launches but prevents harm.</div><div class="t2"><b>How we manage it:</b> Proportionate duties: lighter for Class A and B, strict for C and D; sandbox for early access.</div></div></div>
+        <div class="card anim"><div class="pair">National <i>⇄</i> Global</div><div><div class="t1">India-specific validation costs more than relying on FDA or EU clearance alone.</div><div class="t2"><b>How we manage it:</b> Accept foreign evidence and add targeted Indian validation, as CDSCO guidance allows; shared BODH benchmarks cut cost.</div></div></div>
+        <div class="card anim"><div class="pair">Data access <i>⇄</i> Privacy</div><div><div class="t1">AI needs health records; DPDP core duties begin May 2027.</div><div class="t2"><b>How we manage it:</b> Consented, de-identified data through ABDM, with ethics committee review.</div></div></div>
+        <div class="card anim"><div class="pair">Feasibility <i>⇄</i> Ambition</div><div><div class="t1">CDSCO needs staff and AI skills before it can enforce.</div><div class="t2"><b>How we manage it:</b> Phase in: Oversight Cell and training first, binding standards in Year 3.</div></div></div>
+        <div class="card anim"><div class="pair">Flexibility <i>⇄</i> Certainty</div><div><div class="t1">An optional change protocol is flexible but gives weak certainty.</div><div class="t2"><b>How we manage it:</b> Mandatory change protocol for adaptive Class C and D AI, with pre-agreed limits.</div></div></div>
+      </div>
+    </div>
+    <div>
+      <div class="label c-orange" style="margin-bottom:10px">Global alignment approach</div>
+      <div class="three">
+        <div style="background:var(--navy)"><b>ADOPT</b><span>international principles</span></div>
+        <div style="background:var(--blue)"><b>ADAPT</b><span>to Indian data and law</span></div>
+        <div style="background:var(--orange)"><b>ADD</b><span>what India needs</span></div>
+      </div>
+      <div class="align">
+        <div class="row"><b>IMDRF</b><span>CDSCO is an affiliate member (2024). Adopt the 10 Good Machine Learning Practice principles (N88, Jan 2025) as the review checklist.</span></div>
+        <div class="row"><b>FDA</b><span>Adapt the predetermined change control plan (final guidance, Dec 2024) into India's mandatory Algorithm Change Protocol.</span></div>
+        <div class="row"><b>EU AI Act</b><span>Medical-device AI duties apply from 2 Aug 2028 (Digital Omnibus, in force 27 Jul 2026). Map Class C and D duties to ease dual compliance for exporters.</span></div>
+        <div class="row"><b>WHO</b><span>Use the six areas of its 2023 regulatory considerations (documentation and transparency, risk management, intended use and validation, data quality, privacy, collaboration) in our rules.</span></div>
+        <div class="row"><b>ISO / IEC</b><span>Name 13485, 62304, 14971, 81001-5-1, 27001 and 42001 as conformity references.</span></div>
+      </div>
+      <div class="addline"><b>ADD:</b> India-specific validation, the Suraksha registry and DPDP-based consent rules.</div>
+    </div>
+  </div>
+  <div class="src" style="bottom:50px;font-size:11.5px">Sources: IMDRF N88 (29 Jan 2025); FDA PCCP final guidance (4 Dec 2024); EU Digital Omnibus on AI (OJ 24 Jul 2026, in force 27 Jul 2026); WHO, Regulatory considerations on AI for health (19 Oct 2023); CDSCO MDSW guidance (Jul 2026); DPDP Rules 2025.</div>
+</section>
+
+<!-- ================= 12 ================= -->
+<section class="slide" data-title="RoadMap Matrix">
+  <div class="kicker"><b>05</b>Year-by-year milestones</div>
+  <h1>RoadMap Matrix</h1>
+  <div class="matrix">
+    <div class="yr anim"><div class="card">
+      <div class="goal">Set up an AI-Device Oversight Cell in CDSCO and notify binding Algorithm Change Protocol and Indian-population validation rules for Class C and D AI devices (Medical Devices Rules amendment).</div>
+      <div class="k">WHO</div>MoHFW, CDSCO, ICMR, industry bodies, clinicians
+      <div class="k">RESOURCES</div>₹25 crore; 20 staff
+      <div class="k g">SUCCESS LOOKS LIKE</div>Rules notified; Cell operational; 50 reviewers and 30 clinicians trained
+      <div class="k">DEPENDS ON</div>None
+      <div class="k g">ADAPTABILITY: IF DELAYED</div>Run the Cell as an interim CDSCO task force and issue the change-protocol and validation rules as guidance until the amendment is notified.
+    </div><div class="base" style="background:#7d95d6">YEAR 1 · 2027</div></div>
+    <div class="yr anim"><div class="card">
+      <div class="goal">Launch an AI-device regulatory sandbox; complete 3 algorithmic impact assessments (chest imaging, ECG, retinal screening) using consented, de-identified ABDM-linked data.</div>
+      <div class="k">WHO</div>CDSCO, IndiaAI Safety Institute, NHA, Data Protection Board, hospitals
+      <div class="k">RESOURCES</div>₹65 crore; test labs; 3 AI experts
+      <div class="k g">SUCCESS LOOKS LIKE</div>Sandbox live with 10 products; 3 assessments published
+      <div class="k">DEPENDS ON</div>Oversight Cell (Year 1)
+      <div class="k g">ADAPTABILITY: IF DELAYED</div>If ABDM-linked data access stalls, run the 3 assessments on ethics-approved hospital datasets and open the sandbox with fewer products.
+    </div><div class="base" style="background:#5f7ac8">YEAR 2 · 2028</div></div>
+    <div class="yr anim"><div class="card">
+      <div class="goal">Notify binding standards for performance, bias and cybersecurity (IEC 62304, 14971, 81001-5-1, 27001 named) and AI-device liability and redress guidance.</div>
+      <div class="k">WHO</div>MoHFW, BIS, CERT-In, Consumer Affairs, NMC, Parliament
+      <div class="k">RESOURCES</div>Drafting committee; ₹5 crore consultations
+      <div class="k g">SUCCESS LOOKS LIKE</div>Standards notified; 80% of Class C and D AI devices file compliance at renewal
+      <div class="k">DEPENDS ON</div>Sandbox lessons (Year 2)
+      <div class="k g">ADAPTABILITY: IF DELAYED</div>If notification slips, apply the named standards as licence-renewal conditions and publish liability guidance as an advisory first.
+    </div><div class="base" style="background:#4861b3">YEAR 3 · 2029</div></div>
+    <div class="yr anim"><div class="card">
+      <div class="goal">Launch a public Registry of licensed AI devices with version history, intended use, sub-population results and algorithm changes.</div>
+      <div class="k">WHO</div>CDSCO, NHA, manufacturers, hospitals
+      <div class="k">RESOURCES</div>₹40 crore platform; 15 staff
+      <div class="k g">SUCCESS LOOKS LIKE</div>Registry live; 70% of licensed AI devices listed; 10 audit summaries published
+      <div class="k">DEPENDS ON</div>Standards (Year 3)
+      <div class="k g">ADAPTABILITY: IF DELAYED</div>If the platform is late, launch in phases: Class C and D devices first, as a public list on the CDSCO website.
+    </div><div class="base" style="background:#344b9a">YEAR 4 · 2030</div></div>
+    <div class="yr anim"><div class="card">
+      <div class="goal">Publish a national AI-device safety scorecard; secure reliance or recognition arrangements with peer regulators; review alignment with IMDRF.</div>
+      <div class="k">WHO</div>All stakeholders; WHO and IMDRF members
+      <div class="k">RESOURCES</div>MoUs; delegations; ₹5 crore
+      <div class="k g">SUCCESS LOOKS LIKE</div>Scorecard published; at least 2 reliance or recognition agreements
+      <div class="k">DEPENDS ON</div>Registry (Year 4)
+      <div class="k g">ADAPTABILITY: IF DELAYED</div>If reliance agreements stall, publish the scorecard on time and start with information-sharing MoUs with peer regulators.
+    </div><div class="base" style="background:var(--navy)">YEAR 5 · 2031</div></div>
+  </div>
+  <div class="src" style="bottom:52px">Budgets, staffing, targets and fallback plans are indicative team proposals, not sourced figures. Dates anchored to DPDP Rules (13 May 2027) and CDSCO MDSW guidance (Jul 2026); re-baselined each December.</div>
+</section>
+
+<!-- ================= 13 ================= -->
+<section class="slide" data-title="SMART test">
+  <div class="kicker"><b>05</b>Year-by-year milestones</div>
+  <h1>Every milestone passes the SMART test</h1>
+  <p class="sub" style="margin-bottom:0">Making milestones effective: each one is tested against five criteria, with the evidence shown in every cell.</p>
+  <div class="smart-head">
+    <div class="score"><b>25/25</b><span>checks met</span><span style="font-size:12px;margin-top:4px">5 milestones × 5 tests</span></div>
+    <div class="crit" style="--c:var(--navy)"><span class="L">S</span><div><h4>Specific</h4><p>Clearly defined actions</p></div></div>
+    <div class="crit" style="--c:var(--blue)"><span class="L">M</span><div><h4>Measurable</h4><p>Quantifiable indicators</p></div></div>
+    <div class="crit" style="--c:var(--green)"><span class="L">A</span><div><h4>Achievable</h4><p>Realistic given resources and context</p></div></div>
+    <div class="crit" style="--c:var(--orange)"><span class="L">R</span><div><h4>Relevant</h4><p>Aligns with vision, risks and principles</p></div></div>
+    <div class="crit" style="--c:var(--red)"><span class="L">T</span><div><h4>Time-bound</h4><p>A clear deadline and sequence</p></div></div>
+  </div>
+  <div class="smart">
+    <div class="y"><small>YEAR 1</small><b>2027</b></div><div class="cell">Oversight Cell + binding change and validation rules</div><div class="cell">50 reviewers and 30 clinicians trained</div><div class="cell">₹25 crore · 20 staff</div><div class="cell">Tackles bias and drift (high-priority risks)</div><div class="cell">Year 1 · no dependency</div>
+    <div class="y"><small>YEAR 2</small><b>2028</b></div><div class="cell">Sandbox + 3 impact assessments</div><div class="cell">10 products in sandbox; 3 assessments published</div><div class="cell">₹65 crore · test labs · 3 AI experts</div><div class="cell">Innovation-enablement; consented data use</div><div class="cell">Year 2 · after the Cell</div>
+    <div class="y"><small>YEAR 3</small><b>2029</b></div><div class="cell">Binding performance, bias and cyber standards + liability guidance</div><div class="cell">80% of Class C and D AI devices comply at renewal</div><div class="cell">₹5 crore · drafting committee</div><div class="cell">Cyber risk; liability and redress gap</div><div class="cell">Year 3 · after sandbox lessons</div>
+    <div class="y"><small>YEAR 4</small><b>2030</b></div><div class="cell">Public registry of licensed AI devices</div><div class="cell">70% listed; 10 audit summaries published</div><div class="cell">₹40 crore · 15 staff</div><div class="cell">Transparency; vision of public scrutiny</div><div class="cell">Year 4 · after the standards</div>
+    <div class="y"><small>YEAR 5</small><b>2031</b></div><div class="cell">National safety scorecard + reliance arrangements</div><div class="cell">At least 2 reliance or recognition agreements</div><div class="cell">₹5 crore · MoUs · delegations</div><div class="cell">Vision: peer regulators rely on India</div><div class="cell">Year 5 · after the registry</div>
+  </div>
+  <div class="src" style="bottom:52px">Evidence in each cell is taken from the milestone table on the previous slide. Budgets and targets are indicative team estimates for validation.</div>
+</section>
+
+<!-- ================= 14 ================= -->
+<section class="slide" data-title="Stakeholders: power and interest">
+  <div class="kicker"><b>06</b>Institutional and stakeholder engagement</div>
+  <h1>Who holds power, who is affected, and how they all connect</h1>
+  <div class="sh-wrap">
+    <div class="orbit">
+      <div class="ring r1"></div><div class="ring r2"></div>
+      <div class="hub"><b>AI-Device Oversight Cell</b><span>CDSCO hub</span></div>
+      <div class="card node" style="left:50%;top:9%;--c:var(--navy)"><h5>Government &amp; regulators</h5><p>MoHFW, CDSCO, ICMR, MeitY, NHA, NMC</p><i>task force, licensing</i></div>
+      <div class="card node" style="left:84%;top:30%;--c:var(--navy)"><h5>Academia &amp; research</h5><p>AIIMS, IITs, ICMR institutes</p><i>audits, validation</i></div>
+      <div class="card node" style="left:84%;top:70%;--c:var(--green)"><h5>Citizens &amp; communities</h5><p>patients, rural and tribal groups</p><i>forums, literacy</i></div>
+      <div class="card node" style="left:50%;top:91%;--c:var(--blue)"><h5>International partners</h5><p>WHO, IMDRF, ITU, peer regulators</p><i>reliance, standards</i></div>
+      <div class="card node" style="left:16%;top:70%;--c:var(--green)"><h5>Civil society &amp; NGOs</h5><p>patient and consumer groups</p><i>consultations</i></div>
+      <div class="card node" style="left:16%;top:30%;--c:var(--navy)"><h5>Private sector</h5><p>manufacturers, startups, hospitals</p><i>sandboxes, co-design</i></div>
+    </div>
+    <div>
+      <div class="label c-orange" style="margin-bottom:10px">Power-interest grid</div>
+      <div class="pig" style="height:600px">
+        <div class="axis-y">POWER →</div>
+        <div class="q anim" style="background:var(--bg-blue)"><small>High power, lower interest</small><h4 class="c-blue">Keep satisfied</h4><p>Parliament, Finance Ministry, NITI Aayog, state health departments</p></div>
+        <div class="q hot anim"><small>High power, high interest</small><h4>Manage closely</h4><p>MoHFW, CDSCO, ICMR, MeitY and IndiaAI, NHA, major manufacturers and industry bodies</p></div>
+        <div class="q anim" style="background:var(--soft)"><small>Lower power, lower interest</small><h4 class="c-muted">Monitor</h4><p>Small suppliers, public not yet using AI-enabled care</p></div>
+        <div class="q anim" style="background:var(--bg-green)"><small>Lower power, high interest</small><h4 class="c-green">Keep informed</h4><p>Clinicians, medical councils, academia, patient and consumer groups, startups</p></div>
+        <div class="axis-x">INTEREST →</div>
+      </div>
+    </div>
+  </div>
+  <div class="src" style="bottom:50px;font-size:11.5px">Sources: stakeholder grouping is a team proposal built on the roles of CDSCO, ICMR, NHA, Data Protection Board, CERT-In and the IndiaAI Safety Institute (MeitY AI Governance Guidelines, Nov 2025); AiMeD and ten other associations (Business Standard, Aug 2026).</div>
+</section>
+
+<!-- ================= 15 ================= -->
+<section class="slide" data-title="Engagement widens each year">
+  <div class="kicker"><b>06</b>Institutional and stakeholder engagement</div>
+  <h1>Engagement widens each year, and must be inclusive and acted on</h1>
+  <div class="tline">
+    <div class="ts anim"><div class="dot">1</div><div class="card"><div class="when">2027 · YEAR 1</div><h4>Launch the AI-Device Oversight Cell with a multi-stakeholder advisory council</h4><p><b>Who:</b> Ministries, CDSCO, patient groups</p><p><b>Purpose:</b> Coordination mechanism</p></div></div>
+    <div class="ts anim"><div class="dot">2</div><div class="card"><div class="when">2028 · YEAR 2</div><h4>National consultation on binding change-protocol and validation rules</h4><p><b>Who:</b> Public, clinicians, academia, industry</p><p><b>Purpose:</b> Legitimacy and input</p></div></div>
+    <div class="ts anim"><div class="dot">3</div><div class="card"><div class="when">2029 · YEAR 3</div><h4>Set up an AI Audit Advisory Council to guide standards</h4><p><b>Who:</b> Regulators, industry, NGOs, test labs</p><p><b>Purpose:</b> Guide standards and registry</p></div></div>
+    <div class="ts anim"><div class="dot">4</div><div class="card"><div class="when">2030 · YEAR 4</div><h4>Regional AI-in-health regulatory summit</h4><p><b>Who:</b> International partners, academia</p><p><b>Purpose:</b> Share lessons, harmonise</p></div></div>
+    <div class="ts anim"><div class="dot">5</div><div class="card"><div class="when">2031 · YEAR 5</div><h4>Public AI-Device Safety Scorecard report</h4><p><b>Who:</b> All stakeholders</p><p><b>Purpose:</b> Show progress and accountability</p></div></div>
+  </div>
+  <div class="eng-bottom">
+    <div>
+      <div class="label c-orange" style="margin-bottom:10px">Engagement mechanisms</div>
+      <div class="mech">
+        <div class="card" style="--c:var(--navy)"><h5>Formal</h5><p>Multi-stakeholder advisory council (quarterly); parliamentary committee briefings.</p></div>
+        <div class="card" style="--c:var(--blue)"><h5>Consultative</h5><p>Public consultation on draft rules; patient and clinician forums in several languages; sectoral roundtables.</p></div>
+        <div class="card" style="--c:var(--green)"><h5>Operational</h5><p>Sandbox with regulator and developers; co-design workshops; annual transparency report.</p></div>
+        <div class="card" style="--c:var(--orange)"><h5>Capacity-building</h5><p>Training for reviewers, clinicians and judges; patient literacy campaigns.</p></div>
+      </div>
+    </div>
+    <div class="real">
+      <div class="label">Making it real</div>
+      <p><b>Likely blockers:</b> Manufacturers resisting mandatory change control; draft-bill disputes; hospitals with limited IT budgets.</p>
+      <p><b>Including marginalised groups:</b> Forums in local languages, travel support and reserved council seats for rural, tribal, women and disabled patients.</p>
+      <p><b>Avoiding tokenism:</b> Publish how input changed each rule ("you said, we did").</p>
+      <p style="margin:0"><b>Measuring effectiveness:</b> Track share of comments adopted, council attendance and a patient trust survey with outcome metrics for each sector.</p>
+    </div>
+  </div>
+  <div class="src" style="bottom:52px">Sources: stakeholder roles per MeitY AI Governance Guidelines (Nov 2025); AiMeD and ten other associations (Business Standard, Aug 2026). Timeline and mechanisms are team proposals.</div>
+</section>
+
+<!-- ================= 16 ================= -->
+<section class="slide" data-title="People and institutions">
+  <div class="kicker"><b>07</b>Capacity and resource plan</div>
+  <h1 style="font-size:40px">People and institutions: who must be ready to oversee AI devices</h1>
+  <div class="four">
+    <div style="--bg:var(--bg-navy);--c:var(--navy)"><b>Human:</b> AI literacy, skilled auditors, ethicists and legal experts</div>
+    <div style="--bg:var(--bg-orange);--c:var(--orange)"><b>Institutional:</b> Clear mandates, authority, enough staff and budget</div>
+    <div style="--bg:var(--bg-green);--c:var(--green)"><b>Financial:</b> Costed needs, diverse funding, a sustainable model</div>
+    <div style="--bg:var(--bg-blue);--c:var(--blue)"><b>Technical:</b> Secure compute, privacy tools and audit tools</div>
+  </div>
+  <div class="sec"><span class="label">A. Human capacity: building the workforce for AI-device oversight</span><span class="pill">FOUNDATION by Year 3</span><span class="pill" style="background:var(--bg-orange);color:var(--orange)">SPECIALISATION Years 3 to 5</span></div>
+  <table class="ctab">
+    <thead><tr><th style="width:24%">Who</th><th style="width:20%">Why it matters</th><th style="width:22%">Current gap</th><th>Plan to build capacity</th><th style="width:90px">When</th></tr></thead>
+    <tbody>
+      <tr><td>AI-device reviewers and auditors (CDSCO, test labs)</td><td>They decide whether an AI device is safe to license.</td><td>AI audit skills are not benchmarked; no certification exists.</td><td>Certified AI audit programme with ICMR and IITs; 50 reviewers trained in Year 1.</td><td class="w">Years 1-2</td></tr>
+      <tr><td>State licensing authorities (inspectors)</td><td>They apply CDSCO guidance in every state.</td><td>Software guidance is new (Jul 2026); familiarity is uneven.</td><td>Training on the software guidance, change protocols and registry use.</td><td class="w">Years 1-3</td></tr>
+      <tr><td>Clinicians and biomedical teams (hospitals)</td><td>They use AI daily and see failures first.</td><td>Risk of over-trust; little AI content in training.</td><td>NMC-backed AI literacy modules; 30 clinicians in Year 1; AI safety in medical curricula.</td><td class="w">Years 1-5</td></tr>
+      <tr><td>Judges and consumer commissions (redress)</td><td>They decide liability when AI causes harm.</td><td>No AI-specific case experience yet.</td><td>AI-harm workshops with judicial academies.</td><td class="w">Years 2-4</td></tr>
+      <tr><td>Patient groups and civil society (journalists)</td><td>They speak for affected communities.</td><td>Low awareness of AI risks and patient rights.</td><td>Literacy programmes; seats on the advisory council.</td><td class="w">Years 1-5</td></tr>
+    </tbody>
+  </table>
+  <div class="sec" style="margin-top:12px"><span class="label">B. Institutional capacity</span></div>
+  <table class="ctab">
+    <thead><tr><th style="width:24%">Key institution</th><th style="width:28%">Mandate needed</th><th style="width:22%">Current gap</th><th>Capacity-building action</th></tr></thead>
+    <tbody>
+      <tr><td>CDSCO (AI-Device Oversight Cell)</td><td>Legal power over AI change control, Indian validation and the registry</td><td>No dedicated AI unit; software guidance is advisory</td><td>Create the Cell (₹25 crore, 20 staff); binding rules through an MDR amendment</td></tr>
+      <tr><td>Data Protection Board</td><td>Clear rules for health AI training data and consent</td><td>Core DPDP duties start only in May 2027</td><td>AI-in-health guidance; joint data protocol with NHA</td></tr>
+      <tr><td>ICMR ethics system</td><td>Ethics review that feeds licensing evidence</td><td>Ethics review and device approval run separately</td><td>Publish validation protocols; train ethics committees</td></tr>
+      <tr><td>CERT-In</td><td>Device-level cyber testing and health-sector reporting</td><td>No device cyber standard named</td><td>Device cyber-testing unit; annual drills</td></tr>
+      <tr><td>Patient grievance cell (ombudsman role)</td><td>Independent route for AI-harm complaints</td><td>No AI-specific redress route</td><td>Set up within CDSCO, linked to the Materiovigilance Programme</td></tr>
+    </tbody>
+  </table>
+  <div class="src" style="bottom:50px;font-size:11.5px">Year 1 targets from the milestone table (50 reviewers, 30 clinicians). Gaps reflect the diagnostic and CDSCO MDSW (Jul 2026); plans for state authorities, judicial academies and the grievance cell are team proposals.</div>
+</section>
+
+<!-- ================= 17 ================= -->
+<section class="slide" data-title="₹140 crore and readiness">
+  <div class="kicker"><b>07</b>Capacity and resource plan</div>
+  <h1 style="font-size:40px">₹140 crore, the right tools, and a plan for where we are least ready</h1>
+  <div class="cost-top">
+    <div><span class="label">D. Estimated costs by area and year (₹ crore)</span>
+      <div class="card chart">
+        <div>
+          <div class="bars" id="costbars"></div>
+          <div class="xlab"><span>2027</span><span>2028</span><span>2029</span><span>2030</span><span>2031</span></div>
+        </div>
+        <div class="lg">
+          <div style="--c:var(--navy)"><i style="background:var(--navy)"></i><span><b>Oversight Cell</b> ₹25 cr · Y1-2</span></div>
+          <div style="--c:var(--orange)"><i style="background:var(--orange)"></i><span><b>Sandbox</b> ₹15 cr/yr · Y2-4</span></div>
+          <div style="--c:var(--green)"><i style="background:var(--green)"></i><span><b>Training</b> ₹5 cr/yr · Y1-5</span></div>
+          <div style="--c:var(--blue)"><i style="background:var(--blue)"></i><span><b>Registry</b> ₹40 cr · Y3-4</span></div>
+          <div style="--c:var(--red)"><i style="background:var(--red)"></i><span><b>International</b> ₹5 cr · Y5</span></div>
+          <div class="total"><b>₹140 crore</b><span>total, 5 years</span></div>
+        </div>
+      </div>
+    </div>
+    <div><span class="label">Potential funding sources</span>
+      <div class="fund">
+        <div class="row"><span class="tagf" style="--bg:var(--bg-navy);--c:var(--navy)">GOVT BUDGET</span><div><h5>Dedicated MoHFW/CDSCO line</h5><p>Primary; protects independence</p></div></div>
+        <div class="row"><span class="tagf" style="--bg:var(--bg-blue);--c:var(--blue)">MISSION FUNDS</span><div><h5>IndiaAI Safe &amp; Trusted AI pillar</h5><p>Outlay ₹10,371.92 crore; where rules permit</p></div></div>
+        <div class="row"><span class="tagf" style="--bg:var(--bg-green);--c:var(--green)">COST RECOVERY</span><div><h5>Licence, audit and listing fees</h5><p>Grows from Year 3 with the registry</p></div></div>
+        <div class="row"><span class="tagf" style="--bg:var(--bg-orange);--c:var(--orange)">PUBLIC-PRIVATE</span><div><h5>Industry co-funds the sandbox</h5><p>Shared cost, no say in approvals</p></div></div>
+        <div class="row"><span class="tagf" style="--bg:var(--bg-red);--c:var(--red)">GRANTS</span><div><h5>Development partners, research grants</h5><p>Training and international work</p></div></div>
+      </div>
+      <div class="bench"><b>Benchmarks:</b> MedTech PLI ₹3,420 crore; SMDI ₹500 crore. Our ₹140 crore is small next to these, which makes it fundable.</div>
+    </div>
+    <div><span class="label">C. Technical capacity</span>
+      <div class="tech">
+        <div><b>AI audit and bias-testing tools:</b> Subgroup checks. Today: BODH; AIKosh 7,541 datasets, 273 models. <em>PARTNER universities, BODH</em></div>
+        <div><b>High-performance compute:</b> Independent re-validation. Today: IndiaAI pool 38,000+ GPUs. <em>PARTNER IndiaAI subsidised access</em></div>
+        <div><b>Privacy-enhancing technologies:</b> Test without moving data. Today: Not yet in routine use. <em>PILOT federated evaluation</em></div>
+        <div><b>Suraksha registry platform:</b> Public device and version record. Today: Not built yet. <em>BUILD CDSCO + NHA (₹40 crore)</em></div>
+        <div><b>Software and cyber test labs:</b> IEC 62304 and 81001-5-1 testing. Today: Capacity to be mapped in Year 1. <em>ACCREDIT partner labs</em></div>
+      </div>
+    </div>
+  </div>
+  <div class="label c-orange" style="margin:12px 0 8px">E. Capacity-building strategies</div>
+  <div class="strat">
+    <div style="--bg:var(--bg-navy);--c:var(--navy)"><span class="ico"><svg viewBox="0 0 24 24"><path d="M22 10L12 5 2 10l10 5 10-5zM6 12v5c3 2 9 2 12 0v-5"/></svg></span><div><h5>Training &amp; skills</h5><p>National AI-device review programme with ICMR and IITs; exchanges with peer regulators through IMDRF.</p></div></div>
+    <div style="--bg:var(--bg-green);--c:var(--green)"><span class="ico"><svg viewBox="0 0 24 24"><path d="M3 21h18M5 21V10M19 21V10M9 21V10M15 21V10M2 10l10-7 10 7z"/></svg></span><div><h5>Institutional strengthening</h5><p>AI-Device Oversight Cell inside CDSCO; advisory council (Year 1) and AI Audit Advisory Council (Year 3).</p></div></div>
+    <div style="--bg:var(--bg-blue);--c:var(--blue)"><span class="ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 0 1 0 20M12 2a15 15 0 0 0 0 20"/></svg></span><div><h5>International cooperation</h5><p>Join IMDRF AI work as an affiliate member; technical assistance from WHO; reliance agreements by Year 5.</p></div></div>
+    <div style="--bg:var(--bg-orange);--c:var(--orange)"><span class="ico"><svg viewBox="0 0 24 24"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></span><div><h5>Sustainability &amp; financing</h5><p>Regulatory fees for audits and registry listing; cost-sharing for the sandbox; a permanent budget line.</p></div></div>
+  </div>
+  <div class="label c-orange" style="margin:12px 0 8px">F. Reflection: assessing our readiness</div>
+  <div class="refl">
+    <div class="card urgent" style="border-left:4px solid var(--red)"><b>Urgent gaps (Years 1-2):</b> No AI-device unit in CDSCO; uncertified reviewers; no named device cyber standard.</div>
+    <div class="card"><b>Needs legislative reform:</b> MDR amendment for binding change protocol and validation; registry mandate; liability guidance under CPA 2019.</div>
+    <div class="card"><b>Best built through partners:</b> Training (ICMR, IITs), compute and testing (IndiaAI, Safety Institute), benchmarks (BODH, AIKosh), standards (IMDRF, WHO).</div>
+    <div class="card"><b>Sustainable after Year 5:</b> Fees for audits and registry listing plus a permanent budget line, so oversight does not depend on one-time grants.</div>
+  </div>
+  <div class="src" style="bottom:50px;font-size:11.5px">Sources: PIB 2225781 (IndiaAI ₹10,371.92 crore; GPUs; AIKosh); PIB 2288770 (PLI ₹3,420 crore; SMDI ₹500 crore); PIB 2229226 (BODH). Costs, routes and strategies are team planning estimates.</div>
+</section>
+
+<!-- ================= 18 ================= -->
+<section class="slide s-flag" data-title="Suraksha AI Registry">
+  <img class="mapf" src="assets/india-map-faint.png" alt="">
+  <div class="seal"><div><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M8.5 12l2.5 2.5 4.5-5"/></svg></div></div>
+  <div class="mark"><div class="label">SURAKSHA MARK</div><p>carried by every listed device</p></div>
+  <div class="kicker"><b>07</b>Our flagship action</div>
+  <h1>Suraksha AI Registry</h1>
+  <div class="motto">Pehle Praman, Phir Upchaar</div>
+  <div class="motto-en">First proof, then treatment</div>
+  <h2>No AI medical device reaches an Indian patient without a public record.</h2>
+  <p class="lead">One open national register of every licensed AI medical device: how it performs on Indian patients, who is accountable for it, and every change made to its algorithm.</p>
+  <div class="pillars">
+    <div class="card anim" style="--c:var(--navy)"><span class="n">1</span><div><h4>Proof before use</h4><p>Indian-population evidence is published for every device before it reaches patients.</p></div></div>
+    <div class="card anim" style="--c:var(--orange)"><span class="n">2</span><div><h4>No silent updates</h4><p>Every algorithm change is logged, versioned and owned by a named manufacturer.</p></div></div>
+    <div class="card anim" style="--c:var(--green)"><span class="n">3</span><div><h4>A mark people can trust</h4><p>Clinicians, patients and peer regulators can check the Suraksha Mark before they rely on a device.</p></div></div>
+  </div>
+  <div class="flagfoot"><span><b>2030</b>&nbsp; Registry live, 70% of licensed AI devices listed &nbsp;&nbsp;&nbsp; <b>2031</b>&nbsp; Full coverage pledged</span><span><i>Sarve Santu Niramayah</i>May all be free from illness</span></div>
+</section>
+
+</div></div>
+
+<div id="ui">
+  <button id="btnOverview" title="Barcha slaydlar (O)">▦</button>
+  <button id="btnPrev" title="Oldingi (←)">←</button>
+  <div id="counter">1 / 18</div>
+  <button id="btnNext" title="Keyingi (→)">→</button>
+  <button id="btnFs" title="To'liq ekran (F)">⤢</button>
+  <button id="btnHelp" title="Yordam (?)">?</button>
+</div>
+<div id="overview"></div>
+<div id="help">
+  <h3>Boshqaruv</h3>
+  <div><kbd>→</kbd><kbd>↓</kbd><kbd>Space</kbd><kbd>PgDn</kbd> keyingi slayd</div>
+  <div><kbd>←</kbd><kbd>↑</kbd><kbd>PgUp</kbd> oldingi slayd</div>
+  <div><kbd>Home</kbd> / <kbd>End</kbd> birinchi / oxirgi</div>
+  <div><kbd>1</kbd>–<kbd>9</kbd> + <kbd>Enter</kbd> slayd raqamiga o'tish</div>
+  <div><kbd>F</kbd> to'liq ekran &nbsp; <kbd>O</kbd> barcha slaydlar</div>
+  <div><kbd>B</kbd> ekranni qoraytirish &nbsp; <kbd>Esc</kbd> yopish</div>
+  <div style="margin-top:8px;color:var(--muted);font-size:13px">Sichqoncha bilan sahifaning o'ng/chap qismini bosish yoki telefonda surish ham ishlaydi.</div>
+</div>
+
+<script>
+(function(){
+  const slides=[...document.querySelectorAll('.slide')];
+  const N=slides.length, stage=document.getElementById('stage');
+  const counter=document.getElementById('counter'), progress=document.getElementById('progress');
+  const overview=document.getElementById('overview'), help=document.getElementById('help');
+  let cur=0, typed='';
+
+  // footer on every slide except title and flagship
+  slides.forEach((s,i)=>{
+    if(s.classList.contains('s-title')) return;
+    const f=document.createElement('div'); f.className='foot';
+    f.innerHTML=`<span>${s.classList.contains('s-flag')?'':'AI Governance Roadmap &nbsp;|&nbsp; AI-Based Medical Devices &nbsp;|&nbsp; India'}</span><span class="r"><img src="assets/flag.png" alt=""><span>${i+1}</span></span>`;
+    s.appendChild(f);
+  });
+
+  // stacked cost chart (₹ crore): [cell, sandbox, training, registry, international]
+  const costs=[[12.5,0,5,0,0],[12.5,15,5,0,0],[0,15,5,20,0],[0,15,5,20,0],[0,0,5,0,5]];
+  const colors=['var(--navy)','var(--orange)','var(--green)','var(--blue)','var(--red)'];
+  const max=45, bars=document.getElementById('costbars');
+  costs.forEach(c=>{
+    const col=document.createElement('div'); col.className='col';
+    c.forEach((v,k)=>{ if(!v) return; const s=document.createElement('div'); s.className='seg'; s.style.height=(v/max*100)+'%'; s.style.background=colors[k]; col.appendChild(s); });
+    const tot=c.reduce((a,b)=>a+b,0), t=document.createElement('div'); t.className='tot';
+    t.style.bottom=(tot/max*100)+'%'; t.textContent='₹'+tot; col.appendChild(t);
+    bars.appendChild(col);
+  });
+
+  // overview
+  slides.forEach((s,i)=>{
+    const b=document.createElement('button');
+    b.innerHTML=`<span>${String(i+1).padStart(2,'0')}</span>${s.dataset.title||''}`;
+    b.onclick=()=>{go(i);toggleOverview(false)};
+    overview.appendChild(b);
+  });
+
+  function fit(){
+    const s=Math.min(innerWidth/1600, innerHeight/900);
+    stage.style.transform=`scale(${s})`;
+  }
+  function go(i){
+    i=Math.max(0,Math.min(N-1,i));
+    slides.forEach((s,k)=>{ s.classList.toggle('active',k===i); s.classList.toggle('prev',k<i); });
+    cur=i;
+    counter.textContent=`${i+1} / ${N}`;
+    progress.style.width=((i+1)/N*100)+'%';
+    document.getElementById('btnPrev').disabled=i===0;
+    document.getElementById('btnNext').disabled=i===N-1;
+    [...overview.children].forEach((b,k)=>b.classList.toggle('cur',k===i));
+    if(location.hash!=='#'+(i+1)) history.replaceState(null,'','#'+(i+1));
+  }
+  const next=()=>go(cur+1), prev=()=>go(cur-1);
+  function toggleOverview(on){ overview.classList.toggle('on',on===undefined?!overview.classList.contains('on'):on); }
+  function toggleFs(){ if(!document.fullscreenElement) document.documentElement.requestFullscreen?.(); else document.exitFullscreen?.(); }
+  function toggleBlack(){ stage.style.visibility=stage.style.visibility==='hidden'?'':'hidden'; }
+
+  document.addEventListener('keydown',e=>{
+    if(e.metaKey||e.ctrlKey||e.altKey) return;
+    const k=e.key;
+    if(/^[0-9]$/.test(k)){ typed+=k; return; }
+    if(k==='Enter' && typed){ go(parseInt(typed,10)-1); typed=''; e.preventDefault(); return; }
+    typed='';
+    if(['ArrowRight','ArrowDown','PageDown',' ','Enter'].includes(k)){ e.preventDefault(); next(); }
+    else if(['ArrowLeft','ArrowUp','PageUp','Backspace'].includes(k)){ e.preventDefault(); prev(); }
+    else if(k==='Home') go(0);
+    else if(k==='End') go(N-1);
+    else if(k==='f'||k==='F') toggleFs();
+    else if(k==='o'||k==='O') toggleOverview();
+    else if(k==='b'||k==='B'||k==='.') toggleBlack();
+    else if(k==='?'||k==='h'||k==='H') help.classList.toggle('on');
+    else if(k==='Escape'){ toggleOverview(false); help.classList.remove('on'); stage.style.visibility=''; }
+  });
+
+  document.getElementById('btnNext').onclick=next;
+  document.getElementById('btnPrev').onclick=prev;
+  document.getElementById('btnFs').onclick=toggleFs;
+  document.getElementById('btnOverview').onclick=()=>toggleOverview();
+  document.getElementById('btnHelp').onclick=()=>help.classList.toggle('on');
+
+  // click left third = back, elsewhere = forward
+  document.getElementById('viewport').addEventListener('click',e=>{
+    if(e.target.closest('button,a')) return;
+    e.clientX < innerWidth/3 ? prev() : next();
+  });
+  // swipe
+  let sx=null;
+  addEventListener('touchstart',e=>{sx=e.touches[0].clientX},{passive:true});
+  addEventListener('touchend',e=>{ if(sx===null) return; const dx=e.changedTouches[0].clientX-sx; if(Math.abs(dx)>50) (dx<0?next:prev)(); sx=null; });
+  // show controls on mouse move
+  let t; addEventListener('mousemove',()=>{document.body.classList.add('show-ui');clearTimeout(t);t=setTimeout(()=>document.body.classList.remove('show-ui'),1800)});
+
+  addEventListener('resize',fit);
+  addEventListener('hashchange',()=>{ const n=parseInt(location.hash.slice(1),10); if(n&&n-1!==cur) go(n-1); });
+  fit();
+  go((parseInt(location.hash.slice(1),10)||1)-1);
+})();
+</script>
+</body>
+</html>
